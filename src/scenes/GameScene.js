@@ -10,9 +10,13 @@ export default class GameScene extends Phaser.Scene {
   constructor() {
     super('game-scene');
     /**
-     * @type {Phaser.Physics.Arcade. Sprite}
+     * @type {Phaser.Physics.Arcade.Sprite}
      */
     this.player = null;
+    /**
+     * @type {Phaser.Tilemaps.Tilemap}
+     */
+    this.level = null;
     this.gameOver = false;
   }
 
@@ -31,13 +35,13 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
-    const level = this.make.tilemap({ key: TILEMAP_KEY });
-    const tileset = level.addTilesetImage('Cuadrado Tiles', TILES_KEY);
-    const platforms = level.createStaticLayer('Platforms', tileset, 0, 0);
+    this.level = this.make.tilemap({ key: TILEMAP_KEY });
+    const tileset = this.level.addTilesetImage('Cuadrado Tiles', TILES_KEY);
+    const platforms = this.level.createStaticLayer('Platforms', tileset, 0, 0);
     platforms.setCollisionByExclusion(-1, true);
 
     // Add door
-    const [door] = level.createFromObjects(
+    const [door] = this.level.createFromObjects(
       'DoorLayer', 3, { key: DOOR_KEY }, this);
     this.physics.world.enable(door, Phaser.Physics.Arcade.STATIC_BODY);
 
@@ -52,7 +56,7 @@ export default class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // Setup camera
-    this.cameras.main.setBounds(0, 0, level.widthInPixels, level.heightInPixels);
+    this.cameras.main.setBounds(0, 0, this.level.widthInPixels, this.level.heightInPixels);
     this.cameras.main.startFollow(this.player);
   }
 
@@ -60,6 +64,12 @@ export default class GameScene extends Phaser.Scene {
     if (this.gameOver) {
       return;
     }
+
+    if (this.player.y > this.level.heightInPixels) {
+      this.playerReset();
+      return;
+    }
+
     this.movePlayer();
     this.animatePlayer();
   }
@@ -110,6 +120,23 @@ export default class GameScene extends Phaser.Scene {
       repeat: -1
     });
 
+    this.playerDieTween = {
+      targets: player,
+      alpha: 1,
+      duration: 100,
+      ease: 'Linear',
+      repeat: 10,
+    };
+
     return player;
+  }
+
+  playerReset() {
+    this.player.setVelocity(0, 0);
+    this.player.setFlipX(false);
+    this.player.setX(50);
+    this.player.setY(672);
+    this.player.setAlpha(0);
+    const tw = this.tweens.add(this.playerDieTween);
   }
 }
