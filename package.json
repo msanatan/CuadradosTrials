@@ -1,0 +1,39 @@
+{
+  "name": "CuadradosTrials",
+  "version": "0.1.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run clean && parcel build src/index.html --public-url . --out-dir dist",
+    "start": "parcel src/index.html",
+    "clean": "rm -rfv dist/*",
+    "test": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msanatan/CuadradosTrials.git"
+  },
+  "keywords": [
+    "phaser",
+    "2d",
+    "platformer"
+  ],
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msanatan/CuadradosTrials/issues"
+  },
+  "homepage": "https://github.com/msanatan/CuadradosTrials#readme",
+  "dependencies": {
+    "phaser": "^3.23.0"
+  },
+  "devDependencies": {
+    "eslint": "^7.0.0",
+    "parcel-bundler": "^1.12.4",
+    "parcel-plugin-static-files-copy": "^2.3.1"
+  },
+  "staticFiles": {
+    "staticPath": "public",
+    "watcherGlob": "**"
+  }
+}
