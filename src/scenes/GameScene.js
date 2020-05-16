@@ -43,14 +43,22 @@ export default class GameScene extends Phaser.Scene {
     // Add door
     const [door] = this.level.createFromObjects(
       'DoorLayer', 3, { key: DOOR_KEY }, this);
-    this.physics.world.enable(door, Phaser.Physics.Arcade.STATIC_BODY);
+    this.physics.world.enable(door, Phaser.Physics.Arcade.DYNAMIC_BODY);
+    door.body.setImmovable(true);
+    door.body.allowGravity = false;
+    door.setOrigin(0.5, 0.5);
 
     // Create player
     this.player = this.createPlayer();
+    // Setup collisions with world
     this.player.setCollideWorldBounds(true);
     this.physics.world.checkCollision.up = false;
     this.physics.world.checkCollision.down = false;
+    // Setup collisions with platform tiles
     this.physics.add.collider(this.player, platforms);
+    // Setup collisions with exit door
+    this.physics.add.overlap(this.player, door, this.levelComplete,
+      null, this);
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -138,5 +146,17 @@ export default class GameScene extends Phaser.Scene {
     this.player.setY(672);
     this.player.setAlpha(0);
     const tw = this.tweens.add(this.playerDieTween);
+  }
+
+  /**
+     * @param player {Phaser.Physics.Arcade.Sprite}
+     * @param exitDoor {Phaser.Physics.Arcade.Sprite}
+     */
+  levelComplete(player, exitDoor) {
+    if (player.body.onFloor() &&
+      player.y > exitDoor.y &&
+      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18) {
+      this.scene.pause();
+    }
   }
 }
