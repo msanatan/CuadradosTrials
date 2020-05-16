@@ -1,6 +1,7 @@
 import Phaser from 'phaser';
 
 const PLAYER_KEY = 'player';
+const DOOR_KEY = 'door';
 const TILES_KEY = 'tiles';
 const TILEMAP_KEY = 'tilemap';
 const PLAYER_SPEED = { x: 200, y: 175 };
@@ -25,6 +26,7 @@ export default class GameScene extends Phaser.Scene {
       }
     );
     this.load.image(TILES_KEY, 'assets/images/tiles.png');
+    this.load.image(DOOR_KEY, 'assets/images/door.png');
     this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level1.json');
   }
 
@@ -34,6 +36,12 @@ export default class GameScene extends Phaser.Scene {
     const platforms = level.createStaticLayer('Platforms', tileset, 0, 0);
     platforms.setCollisionByExclusion(-1, true);
 
+    // Add door
+    const [door] = level.createFromObjects(
+      'DoorLayer', 3, { key: DOOR_KEY }, this);
+    this.physics.world.enable(door, Phaser.Physics.Arcade.STATIC_BODY);
+
+    // Create player
     this.player = this.createPlayer();
     this.physics.add.collider(this.player, platforms);
 
