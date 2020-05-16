@@ -43,6 +43,9 @@ export default class GameScene extends Phaser.Scene {
 
     // Create player
     this.player = this.createPlayer();
+    this.player.setCollideWorldBounds(true);
+    this.physics.world.checkCollision.up = false;
+    this.physics.world.checkCollision.down = false;
     this.physics.add.collider(this.player, platforms);
 
     // Setup input listener
