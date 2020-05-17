@@ -1,9 +1,6 @@
 import Phaser from 'phaser';
+import { DOOR_KEY, PLAYER_KEY, TILEMAP_KEY, TILES_KEY } from './keys';
 
-const PLAYER_KEY = 'player';
-const DOOR_KEY = 'door';
-const TILES_KEY = 'tiles';
-const TILEMAP_KEY = 'tilemap';
 const PLAYER_SPEED = { x: 200, y: 175 };
 
 export default class GameScene extends Phaser.Scene {
@@ -17,37 +14,9 @@ export default class GameScene extends Phaser.Scene {
      * @type {Phaser.Tilemaps.Tilemap}
      */
     this.level = null;
-    this.gameOver = false;
-  }
-
-  preload() {
-    this.load.spritesheet(
-      PLAYER_KEY,
-      'assets/images/cuadrado.png',
-      {
-        frameWidth: 32,
-        frameHeight: 32
-      }
-    );
-    this.load.image(TILES_KEY, 'assets/images/tiles.png');
-    this.load.image(DOOR_KEY, 'assets/images/door.png');
-    this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level1.json');
-    // Load Google Font script
-    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
   create() {
-    // Load fonts
-    WebFont.load({
-      custom: {
-        families: ['Pixel Inversions'],
-        urls: ['../fonts.css']
-      },
-      active: () => {
-        console.log('Fonts loaded');
-      }
-    });
-
     this.level = this.make.tilemap({ key: TILEMAP_KEY });
     const tileset = this.level.addTilesetImage('Cuadrado Tiles', TILES_KEY);
     const platforms = this.level.createStaticLayer('Platforms', tileset, 0, 0);
