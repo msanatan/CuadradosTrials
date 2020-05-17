@@ -32,9 +32,22 @@ export default class GameScene extends Phaser.Scene {
     this.load.image(TILES_KEY, 'assets/images/tiles.png');
     this.load.image(DOOR_KEY, 'assets/images/door.png');
     this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level1.json');
+    // Load Google Font script
+    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
   create() {
+    // Load fonts
+    WebFont.load({
+      custom: {
+        families: ['Pixel Inversions'],
+        urls: ['../fonts.css']
+      },
+      active: () => {
+        console.log('Fonts loaded');
+      }
+    });
+
     this.level = this.make.tilemap({ key: TILEMAP_KEY });
     const tileset = this.level.addTilesetImage('Cuadrado Tiles', TILES_KEY);
     const platforms = this.level.createStaticLayer('Platforms', tileset, 0, 0);
@@ -157,6 +170,17 @@ export default class GameScene extends Phaser.Scene {
       player.y > exitDoor.y &&
       Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18) {
       this.scene.pause();
+
+      const levelCompleteText = this.add.text(
+        this.physics.world.bounds.centerX,
+        this.physics.world.bounds.centerY + 40,
+        'Level Complete!',
+        {
+          fontFamily: 'Pixel Inversions',
+          fontSize: 44,
+          color: '#FFFFFF',
+        }
+      ).setOrigin(0.5);
     }
   }
 }
