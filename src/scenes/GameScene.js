@@ -31,7 +31,7 @@ export default class GameScene extends Phaser.Scene {
     background.setScale(scale).setScrollFactor(0);
 
     // Display Tiled level
-    const tileset = this.level.addTilesetImage('Cuadrado Tiles', TILES_KEY);
+    const tileset = this.level.addTilesetImage('Cuadrado\'s Tiles', TILES_KEY);
     const platforms = this.level.createStaticLayer('Platforms', tileset, 0, 0);
     platforms.setCollisionByExclusion(-1, true);
 
