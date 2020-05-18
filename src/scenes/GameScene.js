@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DOOR_KEY, PLAYER_KEY, TILEMAP_KEY, TILES_KEY } from './keys';
+import { DOOR_KEY, PLAYER_KEY, TILEMAP_KEY, TILES_KEY, BACKGROUND_KEY } from './keys';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
@@ -17,7 +17,20 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create() {
+    // Add Tiled level
     this.level = this.make.tilemap({ key: TILEMAP_KEY });
+    // Add background image
+    const background = this.add.image(
+      this.level.widthInPixels / 2,
+      this.level.heightInPixels / 2,
+      BACKGROUND_KEY
+    );
+    let scaleX = this.level.widthInPixels / background.width;
+    let scaleY = this.level.heightInPixels / background.height;
+    let scale = Math.max(scaleX, scaleY);
+    background.setScale(scale).setScrollFactor(0);
+
+    // Display Tiled level
     const tileset = this.level.addTilesetImage('Cuadrado Tiles', TILES_KEY);
     const platforms = this.level.createStaticLayer('Platforms', tileset, 0, 0);
     platforms.setCollisionByExclusion(-1, true);
@@ -95,7 +108,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   createPlayer() {
-    const player = this.physics.add.sprite(50, 672, PLAYER_KEY);
+    const player = this.physics.add.sprite(50, 656, PLAYER_KEY);
 
     this.anims.create({
       key: 'idle',
@@ -125,7 +138,7 @@ export default class GameScene extends Phaser.Scene {
     this.player.setVelocity(0, 0);
     this.player.setFlipX(false);
     this.player.setX(50);
-    this.player.setY(672);
+    this.player.setY(656);
     this.player.setAlpha(0);
     const tw = this.tweens.add(this.playerDieTween);
   }

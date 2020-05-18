@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DOOR_KEY, PLAYER_KEY, TILEMAP_KEY, TILES_KEY } from './keys';
+import { DOOR_KEY, PLAYER_KEY, TILEMAP_KEY, TILES_KEY, BACKGROUND_KEY } from './keys';
 
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
@@ -17,7 +17,8 @@ export default class PreloadScene extends Phaser.Scene {
     );
     this.load.image(TILES_KEY, 'assets/images/tiles.png');
     this.load.image(DOOR_KEY, 'assets/images/door.png');
-    this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level1.json');
+    this.load.image(BACKGROUND_KEY, 'assets/images/background.png');
+    this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level2.json');
     // Load Google Font script
     this.load.script('webfont',
       'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
