@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DOOR_KEY, PLAYER_KEY, TILEMAP_KEY, TILES_KEY, BACKGROUND_KEY } from './keys';
+import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey } from './keys';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
@@ -18,7 +18,7 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // Add Tiled level
-    this.level = this.make.tilemap({ key: TILEMAP_KEY });
+    this.level = this.make.tilemap({ key: getLevelKey(1) });
     // Add background image
     const background = this.add.image(
       this.level.widthInPixels / 2,
