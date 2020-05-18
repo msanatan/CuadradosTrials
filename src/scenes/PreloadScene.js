@@ -18,7 +18,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image(TILES_KEY, 'assets/images/tiles.png');
     this.load.image(DOOR_KEY, 'assets/images/door.png');
     this.load.image(BACKGROUND_KEY, 'assets/images/background.png');
-    this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level2.json');
+    this.load.tilemapTiledJSON(TILEMAP_KEY, 'assets/tilemaps/level1.json');
     // Load Google Font script
     this.load.script('webfont',
       'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
