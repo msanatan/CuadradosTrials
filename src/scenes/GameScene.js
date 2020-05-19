@@ -37,7 +37,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Add door
     const [door] = this.level.createFromObjects(
-      'DoorLayer', 3, { key: DOOR_KEY }, this);
+      'ExitDoor', 'Door', { key: DOOR_KEY }, this);
     this.physics.world.enable(door, Phaser.Physics.Arcade.DYNAMIC_BODY);
     door.body.setImmovable(true);
     door.body.allowGravity = false;

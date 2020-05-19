@@ -27,13 +27,13 @@
         {
          "draworder":"topdown",
          "id":2,
-         "name":"DoorLayer",
+         "name":"ExitDoor",
          "objects":[
                 {
                  "gid":1,
                  "height":64,
                  "id":3,
-                 "name":"",
+                 "name":"Door",
                  "rotation":0,
                  "type":"",
                  "visible":true,
