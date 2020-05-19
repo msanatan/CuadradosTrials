@@ -49,6 +49,8 @@ export default class GameScene extends Phaser.Scene {
     this.player.setCollideWorldBounds(true);
     this.physics.world.checkCollision.up = false;
     this.physics.world.checkCollision.down = false;
+    this.physics.world.bounds.width = this.level.widthInPixels;
+    this.physics.world.bounds.height = this.level.heightInPixels;
     // Setup collisions with platform tiles
     this.physics.add.collider(this.player, platforms);
     // Setup collisions with exit door
