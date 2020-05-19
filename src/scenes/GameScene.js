@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey } from './constants';
+import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey, TILED_EXIT_DOOR_LAYER, TILED_DOOR_KEY } from './constants';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
@@ -37,7 +37,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Add door
     const [door] = this.level.createFromObjects(
-      'ExitDoor', 'Door', { key: DOOR_KEY }, this);
+      TILED_EXIT_DOOR_LAYER, TILED_DOOR_KEY, { key: DOOR_KEY }, this);
     this.physics.world.enable(door, Phaser.Physics.Arcade.DYNAMIC_BODY);
     door.body.setImmovable(true);
     door.body.allowGravity = false;
