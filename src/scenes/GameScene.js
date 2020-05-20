@@ -14,6 +14,14 @@ export default class GameScene extends Phaser.Scene {
      * @type {number}
      */
     this.level = 1;
+    /**
+     * @type {boolean}
+     */
+    this.transitioningLevel = false;
+  }
+
+  init(data) {
+    this.level = data.level || 1;
   }
 
   create() {
@@ -170,7 +178,6 @@ export default class GameScene extends Phaser.Scene {
     if (player.body.onFloor() &&
       player.y > exitDoor.y &&
       Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18) {
-      this.scene.pause();
 
       const levelCompleteText = this.add.text(
         this.physics.world.bounds.centerX,
@@ -182,6 +189,20 @@ export default class GameScene extends Phaser.Scene {
           color: '#FFFFFF',
         }
       ).setOrigin(0.5);
+
+      this.time.addEvent({
+        delay: 1500,
+        callback: () => {
+          if (!this.transitioningLevel) {
+            this.transitioningLevel = true;
+            this.cameras.main.on('camerafadeoutcomplete', () => {
+              this.scene.restart({ level: this.level + 1 });
+            }, this);
+
+            this.cameras.main.fadeOut(500, 0, 0, 0, null, this);
+          }
+        },
+      });
     }
   }
 }
