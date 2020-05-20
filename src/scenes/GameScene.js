@@ -44,7 +44,7 @@ export default class GameScene extends Phaser.Scene {
     door.setOrigin(0.5, 0.5);
 
     // Create player
-    this.player = this.createPlayer();
+    this.player = this.createPlayer(50, 656);
     // Setup collisions with world
     this.player.setCollideWorldBounds(true);
     this.physics.world.checkCollision.up = false;
@@ -71,7 +71,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if (this.player.y > this.level.heightInPixels) {
-      this.playerReset();
+      this.playerReset(50, 656);
       return;
     }
 
@@ -109,8 +109,13 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  createPlayer() {
-    const player = this.physics.add.sprite(50, 656, PLAYER_KEY);
+  /**
+   * Creates a new player, accepting it's start coordinates
+   * @param {number} x - X coordinate
+   * @param {number} y - Y coordinate
+   */
+  createPlayer(x, y) {
+    const player = this.physics.add.sprite(x, y, PLAYER_KEY);
 
     this.anims.create({
       key: 'idle',
@@ -136,19 +141,25 @@ export default class GameScene extends Phaser.Scene {
     return player;
   }
 
-  playerReset() {
+  /**
+   * Resets players to a position in the game world, relative to the tilemap
+   * @param {number} x - X coordinate
+   * @param {number} y - Y coordinate
+   */
+  playerReset(x, y) {
     this.player.setVelocity(0, 0);
     this.player.setFlipX(false);
-    this.player.setX(50);
-    this.player.setY(656);
+    this.player.setX(x);
+    this.player.setY(y);
     this.player.setAlpha(0);
     const tw = this.tweens.add(this.playerDieTween);
   }
 
   /**
-     * @param player {Phaser.Physics.Arcade.Sprite}
-     * @param exitDoor {Phaser.Physics.Arcade.Sprite}
-     */
+   * Verifies if a player completed a level, should be split into two functions
+   * @param player {Phaser.Physics.Arcade.Sprite}
+   * @param exitDoor {Phaser.Physics.Arcade.Sprite}
+   */
   levelComplete(player, exitDoor) {
     if (player.body.onFloor() &&
       player.y > exitDoor.y &&
