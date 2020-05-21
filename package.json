@@ -7,7 +7,8 @@
     "build": "npm run clean && parcel build src/index.html --public-url . --out-dir dist",
     "start": "parcel src/index.html",
     "clean": "rm -rfv dist/*",
-    "test": "eslint src"
+    "test": "eslint src",
+    "lint": "eslint src --fix"
   },
   "repository": {
     "type": "git",
