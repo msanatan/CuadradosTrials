@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey, TILED_EXIT_DOOR_LAYER, TILED_DOOR_KEY } from './constants';
+import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey, TILED_EXIT_DOOR_LAYER, TILED_DOOR_KEY, TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER, TILED_HORIZONTAL_MOVING_PLATFORM_KEY, HORIZONTAL_PLATFORM_KEY } from './constants';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
@@ -25,12 +25,12 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.level = data.level || 1;
+    this.level = data.level || 2;
   }
 
   create() {
     // Setup level
-    const [tilemap, platforms, door, checkpoints] = this.setupLevel(this.level);
+    const [tilemap, platforms, door, checkpoints, horizontalPlatforms] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
     // Create player
     this.player = this.createPlayer(checkpoints[0].x, checkpoints[0].y);
@@ -45,6 +45,8 @@ export default class GameScene extends Phaser.Scene {
     // Setup collisions with exit door
     this.physics.add.overlap(this.player, door, this.levelComplete,
       null, this);
+    this.physics.add.collider(this.player, horizontalPlatforms,
+      this.collideMovingPlatform, null, this);
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -64,6 +66,11 @@ export default class GameScene extends Phaser.Scene {
       return;
     }
 
+    // If a player is not on a moving platform, reset the onPlatform flag
+    if (this.player.onPlatform && !this.player.body.touching.down) {
+      this.player.onPlatform = false;
+    }
+
     this.movePlayer();
     this.animatePlayer();
   }
@@ -78,13 +85,14 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if ((this.cursors.space.isDown || this.cursors.up.isDown) &&
-      this.player.body.onFloor()) {
+      (this.player.body.onFloor() || this.player.onPlatform)) {
       this.player.setVelocityY(-PLAYER_SPEED.y);
     }
   }
 
   animatePlayer() {
-    if (this.player.body.velocity.x !== 0 && this.player.body.onFloor()) {
+    if (this.player.body.velocity.x !== 0 &&
+      (this.player.body.onFloor() || this.player.onPlatform)) {
       this.player.anims.play('walk', true);
     } else {
       this.player.anims.play('idle', true);
@@ -105,6 +113,7 @@ export default class GameScene extends Phaser.Scene {
    */
   createPlayer(x, y) {
     const player = this.physics.add.sprite(x, y, PLAYER_KEY);
+    player.onPlatform = false;
 
     this.anims.create({
       key: 'idle',
@@ -170,7 +179,34 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    return [tilemap, platforms, door, checkpoints]
+    // Initiate moving platforms
+    const horizontalPlatformObjects = tilemap.createFromObjects(
+      TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER,
+      TILED_HORIZONTAL_MOVING_PLATFORM_KEY,
+      { key: HORIZONTAL_PLATFORM_KEY },
+      this);
+
+    horizontalPlatformObjects.forEach((platform) => {
+      this.physics.world.enable(platform, Phaser.Physics.Arcade.DYNAMIC_BODY);
+      platform.body.setImmovable(true);
+      platform.body.allowGravity = false;
+      platform.setOrigin(0.5, 0.5);
+    });
+
+    const horizontalPlatforms = this.physics.add.group(horizontalPlatformObjects);
+
+    return [tilemap, platforms, door, checkpoints, horizontalPlatforms]
+  }
+
+  /**
+   * Checks if a player is standing on a moving platform so they could jump
+   * @param player {Phaser.Physics.Arcade.Sprite}
+   * @param movingPlatform {Phaser.Physics.Arcade.Sprite}
+   */
+  collideMovingPlatform(player, movingPlatform) {
+    if (player.body.touching.down) {
+      player.onPlatform = true;
+    }
   }
 
   /**
