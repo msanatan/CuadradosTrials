@@ -1,6 +1,6 @@
-import Phaser from 'phaser';
-import GameScene from './scenes/GameScene';
-import PreloadScene from './scenes/PreloadScene';
+import Phaser from "phaser";
+import GameScene from "./scenes/GameScene";
+import PreloadScene from "./scenes/PreloadScene";
 
 const config = {
   type: Phaser.AUTO,
@@ -10,18 +10,18 @@ const config = {
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 800,
-    height: 600
+    height: 600,
   },
   physics: {
-    default: 'arcade',
+    default: "arcade",
     arcade: {
       gravity: {
-        y: 300
+        y: 300,
       },
-      debug: true
+      debug: true,
     },
   },
-  scene: [PreloadScene, GameScene]
+  scene: [PreloadScene, GameScene],
 };
 
-export default new Phaser.Game(config)
+export default new Phaser.Game(config);
