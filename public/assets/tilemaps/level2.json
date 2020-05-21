@@ -1,4 +1,12 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "format":"json",
+         "target":"level2.json"
+        }
+    },
  "height":25,
  "infinite":false,
  "layers":[
@@ -13,6 +21,28 @@
          "type":"tilelayer",
          "visible":true,
          "width":25,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
+         "id":5,
+         "name":"Checkpoints",
+         "objects":[
+                {
+                 "height":0,
+                 "id":37,
+                 "name":"Checkpoint",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":48,
+                 "y":688
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
          "x":0,
          "y":0
         }, 
@@ -214,8 +244,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":5,
- "nextobjectid":34,
+ "nextlayerid":6,
+ "nextobjectid":38,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.3.4",
