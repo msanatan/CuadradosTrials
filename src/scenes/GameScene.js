@@ -39,7 +39,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.level = data.level || 2;
+    this.level = data.level || 1;
   }
 
   create() {
@@ -205,12 +205,18 @@ export default class GameScene extends Phaser.Scene {
     });
 
     // Initiate moving platforms
-    const horizontalPlatformObjects = tilemap.createFromObjects(
+    let horizontalPlatformObjects = tilemap.createFromObjects(
       TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER,
       TILED_HORIZONTAL_MOVING_PLATFORM_KEY,
       { key: HORIZONTAL_PLATFORM_KEY },
       this
     );
+
+    // If the createFromObjects method fails, it returns null
+    // We just set it to an empty array to not deal with errors
+    if (!horizontalPlatformObjects) {
+      horizontalPlatformObjects = [];
+    }
 
     horizontalPlatformObjects.forEach((platform) => {
       this.physics.world.enable(platform, Phaser.Physics.Arcade.DYNAMIC_BODY);
