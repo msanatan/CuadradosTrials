@@ -2,6 +2,7 @@ export const PLAYER_KEY = 'player';
 export const DOOR_KEY = 'door';
 export const TILES_KEY = 'tiles';
 export const BACKGROUND_KEY = 'background';
+export const HORIZONTAL_PLATFORM_KEY = 'horizontal';
 
 /**
  * Generates a key for levels
@@ -14,7 +15,8 @@ export const getLevelKey = (levelNum) => {
 
 export const TILED_EXIT_DOOR_LAYER = 'ExitDoor';
 export const TILED_PLATFORMS_LAYER = 'Platforms';
-export const TILED_MOVING_PLATFORMS_LAYER = 'MovingPlatforms';
+export const TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER = 'HorizontalMovingPlatforms';
+export const TILED_VERTICAL_MOVING_PLATFORMS_LAYER = 'VerticalMovingPlatforms';
 export const TILED_SPIKES_LAYER = 'Spikes';
 
 export const TILED_DOOR_KEY = 'Door';
