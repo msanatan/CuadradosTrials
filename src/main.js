@@ -1,6 +1,6 @@
-import Phaser from "phaser";
-import GameScene from "./scenes/GameScene";
-import PreloadScene from "./scenes/PreloadScene";
+import Phaser from 'phaser';
+import GameScene from './scenes/GameScene';
+import PreloadScene from './scenes/PreloadScene';
 
 const config = {
   type: Phaser.AUTO,
@@ -13,7 +13,7 @@ const config = {
     height: 600,
   },
   physics: {
-    default: "arcade",
+    default: 'arcade',
     arcade: {
       gravity: {
         y: 300,

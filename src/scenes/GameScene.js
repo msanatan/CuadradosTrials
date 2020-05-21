@@ -1,4 +1,4 @@
-import Phaser from "phaser";
+import Phaser from 'phaser';
 import {
   DOOR_KEY,
   PLAYER_KEY,
@@ -13,13 +13,13 @@ import {
   TILED_PLATFORMS_LAYER,
   TILED_CHECKPOINTS_LAYER,
   TILED_TILESET_NAME,
-} from "./constants";
+} from './constants';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
-    super("game-scene");
+    super('game-scene');
     /**
      * @type {Phaser.Physics.Arcade.Sprite}
      */
@@ -44,13 +44,9 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // Setup level
-    const [
-      tilemap,
-      platforms,
-      door,
-      checkpoints,
-      horizontalPlatforms,
-    ] = this.setupLevel(this.level);
+    const [tilemap, platforms, door, checkpoints, horizontalPlatforms] = this.setupLevel(
+      this.level
+    );
     this.levelCheckpoints = checkpoints;
     // Create player
     this.player = this.createPlayer(checkpoints[0].x, checkpoints[0].y);
@@ -76,12 +72,7 @@ export default class GameScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     // Setup camera
-    this.cameras.main.setBounds(
-      0,
-      0,
-      tilemap.widthInPixels,
-      tilemap.heightInPixels
-    );
+    this.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
     this.cameras.main.startFollow(this.player);
   }
 
@@ -126,9 +117,9 @@ export default class GameScene extends Phaser.Scene {
       this.player.body.velocity.x !== 0 &&
       (this.player.body.onFloor() || this.player.onPlatform)
     ) {
-      this.player.anims.play("walk", true);
+      this.player.anims.play('walk', true);
     } else {
-      this.player.anims.play("idle", true);
+      this.player.anims.play('idle', true);
     }
 
     // Check direction of animations
@@ -149,13 +140,13 @@ export default class GameScene extends Phaser.Scene {
     player.onPlatform = false;
 
     this.anims.create({
-      key: "idle",
+      key: 'idle',
       frames: [{ key: PLAYER_KEY, frame: 0 }],
       frameRate: 2,
     });
 
     this.anims.create({
-      key: "walk",
+      key: 'walk',
       frames: this.anims.generateFrameNumbers(PLAYER_KEY, { start: 0, end: 1 }),
       frameRate: 10,
       repeat: -1,
@@ -165,7 +156,7 @@ export default class GameScene extends Phaser.Scene {
       targets: player,
       alpha: 1,
       duration: 100,
-      ease: "Linear",
+      ease: 'Linear',
       repeat: 10,
     };
 
@@ -188,12 +179,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Display Tiled level
     const tileset = tilemap.addTilesetImage(TILED_TILESET_NAME, TILES_KEY);
-    const platforms = tilemap.createStaticLayer(
-      TILED_PLATFORMS_LAYER,
-      tileset,
-      0,
-      0
-    );
+    const platforms = tilemap.createStaticLayer(TILED_PLATFORMS_LAYER, tileset, 0, 0);
     platforms.setCollisionByExclusion(-1, true);
 
     // Add door
@@ -233,9 +219,7 @@ export default class GameScene extends Phaser.Scene {
       platform.setOrigin(0.5, 0.5);
     });
 
-    const horizontalPlatforms = this.physics.add.group(
-      horizontalPlatformObjects
-    );
+    const horizontalPlatforms = this.physics.add.group(horizontalPlatformObjects);
 
     return [tilemap, platforms, door, checkpoints, horizontalPlatforms];
   }
@@ -274,18 +258,17 @@ export default class GameScene extends Phaser.Scene {
     if (
       player.body.onFloor() &&
       player.y > exitDoor.y &&
-      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) <
-      18
+      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18
     ) {
       const levelCompleteText = this.add
         .text(
           this.physics.world.bounds.centerX,
           this.physics.world.bounds.centerY + 40,
-          "Level Complete!",
+          'Level Complete!',
           {
-            fontFamily: "Pixel Inversions",
+            fontFamily: 'Pixel Inversions',
             fontSize: 44,
-            color: "#FFFFFF",
+            color: '#FFFFFF',
           }
         )
         .setOrigin(0.5);
@@ -296,7 +279,7 @@ export default class GameScene extends Phaser.Scene {
           if (!this.transitioningLevel) {
             this.transitioningLevel = true;
             this.cameras.main.on(
-              "camerafadeoutcomplete",
+              'camerafadeoutcomplete',
               () => {
                 this.scene.restart({ level: this.level + 1 });
               },
