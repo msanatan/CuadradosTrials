@@ -13,11 +13,15 @@ export default class GameScene extends Phaser.Scene {
     /**
      * @type {number}
      */
-    this.level = 1;
+    this.level = null;
     /**
      * @type {boolean}
      */
     this.transitioningLevel = false;
+    /**
+     * @type {Array}
+     */
+    this.levelCheckpoints = [];
   }
 
   init(data) {
@@ -26,9 +30,10 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // Setup level
-    const [tilemap, platforms, door] = this.setupLevel(this.level);
+    const [tilemap, platforms, door, checkpoints] = this.setupLevel(this.level);
+    this.levelCheckpoints = checkpoints;
     // Create player
-    this.player = this.createPlayer(50, 656);
+    this.player = this.createPlayer(checkpoints[0].x, checkpoints[0].y);
     // Setup collisions with world
     this.player.setCollideWorldBounds(true);
     this.physics.world.checkCollision.up = false;
@@ -55,7 +60,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     if (this.player.y > this.physics.world.bounds.height) {
-      this.playerReset(50, 656);
+      this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
       return;
     }
 
@@ -152,7 +157,20 @@ export default class GameScene extends Phaser.Scene {
     door.body.allowGravity = false;
     door.setOrigin(0.5, 0.5);
 
-    return [tilemap, platforms, door]
+    // Add checkpoints
+    const checkpoints = []
+    tilemap.objects.forEach((objectLayer) => {
+      if (objectLayer.name.trim() == "Checkpoints") {
+        objectLayer.objects.forEach((checkpoint) => {
+          checkpoints.push(new Phaser.Geom.Point(
+            checkpoint.x,
+            checkpoint.y,
+          ));
+        });
+      }
+    });
+
+    return [tilemap, platforms, door, checkpoints]
   }
 
   /**
