@@ -18,6 +18,9 @@ export const TILED_PLATFORMS_LAYER = 'Platforms';
 export const TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER = 'HorizontalMovingPlatforms';
 export const TILED_VERTICAL_MOVING_PLATFORMS_LAYER = 'VerticalMovingPlatforms';
 export const TILED_SPIKES_LAYER = 'Spikes';
+export const TILED_CHECKPOINTS_LAYER = 'Checkpoints';
+
+export const TILED_TILESET_NAME = "Cuadrado's Tiles";
 
 export const TILED_DOOR_KEY = 'Door';
 export const TILED_HORIZONTAL_MOVING_PLATFORM_KEY = 'Horizontal';

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey, TILED_EXIT_DOOR_LAYER, TILED_DOOR_KEY, TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER, TILED_HORIZONTAL_MOVING_PLATFORM_KEY, HORIZONTAL_PLATFORM_KEY } from './constants';
+import { DOOR_KEY, PLAYER_KEY, TILES_KEY, BACKGROUND_KEY, getLevelKey, TILED_EXIT_DOOR_LAYER, TILED_DOOR_KEY, TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER, TILED_HORIZONTAL_MOVING_PLATFORM_KEY, HORIZONTAL_PLATFORM_KEY, TILED_PLATFORMS_LAYER, TILED_CHECKPOINTS_LAYER, TILED_TILESET_NAME } from './constants';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
@@ -154,8 +154,8 @@ export default class GameScene extends Phaser.Scene {
     background.setScale(scale).setScrollFactor(0);
 
     // Display Tiled level
-    const tileset = tilemap.addTilesetImage('Cuadrado\'s Tiles', TILES_KEY);
-    const platforms = tilemap.createStaticLayer('Platforms', tileset, 0, 0);
+    const tileset = tilemap.addTilesetImage(TILED_TILESET_NAME, TILES_KEY);
+    const platforms = tilemap.createStaticLayer(TILED_PLATFORMS_LAYER, tileset, 0, 0);
     platforms.setCollisionByExclusion(-1, true);
 
     // Add door
@@ -169,7 +169,7 @@ export default class GameScene extends Phaser.Scene {
     // Add checkpoints
     const checkpoints = []
     tilemap.objects.forEach((objectLayer) => {
-      if (objectLayer.name.trim() == "Checkpoints") {
+      if (objectLayer.name.trim() == TILED_CHECKPOINTS_LAYER) {
         objectLayer.objects.forEach((checkpoint) => {
           checkpoints.push(new Phaser.Geom.Point(
             checkpoint.x,
