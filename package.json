@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && parcel build src/index.html --public-url . --out-dir dist",
+    "build": "npm run clean && parcel build src/index.html --no-source-maps --public-url . --out-dir dist",
     "start": "parcel src/index.html",
     "clean": "rm -rfv dist/*",
     "test": "eslint src",
