@@ -36,19 +36,19 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":6
                         }, 
                         {
-                         "name":"Duration",
+                         "name":"hold",
                          "type":"int",
                          "value":1000
                         }, 
                         {
-                         "name":"Hold",
+                         "name":"speed",
                          "type":"int",
-                         "value":1000
+                         "value":200
                         }],
                  "rotation":0,
                  "type":"",
@@ -64,19 +64,19 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":6
                         }, 
                         {
-                         "name":"Duration",
+                         "name":"hold",
                          "type":"int",
                          "value":1000
                         }, 
                         {
-                         "name":"Hold",
+                         "name":"speed",
                          "type":"int",
-                         "value":1000
+                         "value":200
                         }],
                  "rotation":0,
                  "type":"",
@@ -92,9 +92,19 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":-8
+                        }, 
+                        {
+                         "name":"hold",
+                         "type":"int",
+                         "value":1000
+                        }, 
+                        {
+                         "name":"speed",
+                         "type":"int",
+                         "value":200
                         }],
                  "rotation":0,
                  "type":"",
@@ -110,9 +120,19 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":-8
+                        }, 
+                        {
+                         "name":"hold",
+                         "type":"int",
+                         "value":1000
+                        }, 
+                        {
+                         "name":"speed",
+                         "type":"int",
+                         "value":200
                         }],
                  "rotation":0,
                  "type":"",
@@ -139,17 +159,17 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":-7
                         }, 
                         {
-                         "name":"Duration",
+                         "name":"duration",
                          "type":"int",
                          "value":1000
                         }, 
                         {
-                         "name":"Hold",
+                         "name":"hold",
                          "type":"int",
                          "value":1000
                         }],
@@ -167,17 +187,17 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":-7
                         }, 
                         {
-                         "name":"Duration",
+                         "name":"duration",
                          "type":"int",
                          "value":1000
                         }, 
                         {
-                         "name":"Hold",
+                         "name":"hold",
                          "type":"int",
                          "value":1000
                         }],
@@ -195,7 +215,7 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":-12
                         }],
@@ -213,7 +233,7 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"Distance",
+                         "name":"distance",
                          "type":"int",
                          "value":-12
                         }],
