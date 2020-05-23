@@ -39,7 +39,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.level = data.level || 1;
+    this.level = data.level || 2;
   }
 
   create() {
@@ -223,6 +223,20 @@ export default class GameScene extends Phaser.Scene {
       platform.body.setImmovable(true);
       platform.body.allowGravity = false;
       platform.setOrigin(0.5, 0.5);
+
+      // Add tween for their movement
+      this.tweens.add({
+        targets: platform,
+        x: (platform.data.list[0].value * 32) + platform.x,
+        y: platform.y,
+        ease: 'Linear',
+        duration: Math.abs(platform.data.list[0].value * platform.data.list[2].value),
+        delay: platform.data.list[1].value, // Initial pause before firing
+        repeatDelay: platform.data.list[1].value, // Pause when the tween yoyos (i.e. comes back to original spot)
+        hold: platform.data.list[1].value, // Pause when tween reaches destination
+        yoyo: true,
+        repeat: -1,
+      });
     });
 
     const horizontalPlatforms = this.physics.add.group(horizontalPlatformObjects);
