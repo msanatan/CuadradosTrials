@@ -13,7 +13,9 @@ import {
   TILED_PLATFORMS_LAYER,
   TILED_CHECKPOINTS_LAYER,
   TILED_TILESET_NAME,
-  TILE_SIZE,
+  TILED_VERTICAL_MOVING_PLATFORMS_LAYER,
+  TILED_VERTICAL_MOVING_PLATFORM_KEY,
+  VERTICAL_PLATFORM_KEY,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 
@@ -38,6 +40,10 @@ export default class GameScene extends Phaser.Scene {
      * @type {Array}
      */
     this.levelCheckpoints = [];
+    /**
+     * @type {Phaser.Physics.Arcade.Group}
+     */
+    this.movingPlatforms = null;
   }
 
   init(data) {
@@ -46,10 +52,9 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // Setup level
-    const [tilemap, platforms, door, checkpoints, horizontalPlatforms] = this.setupLevel(
-      this.level
-    );
+    const [tilemap, platforms, door, checkpoints, movingPlatforms] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
+    this.movingPlatforms = movingPlatforms;
     // Create player
     this.player = this.createPlayer(checkpoints[0].x, checkpoints[0].y);
     // Setup collisions with world
@@ -62,13 +67,8 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, platforms);
     // Setup collisions with exit door
     this.physics.add.overlap(this.player, door, this.levelComplete, null, this);
-    this.physics.add.collider(
-      this.player,
-      horizontalPlatforms,
-      this.collideMovingPlatform,
-      null,
-      this
-    );
+    // Setup collisions with moving platforms
+    this.physics.add.collider(this.player, movingPlatforms, this.collideMovingPlatform, null, this);
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -79,10 +79,6 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.gameOver) {
-      return;
-    }
-
     if (this.player.y > this.physics.world.bounds.height) {
       this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
       return;
@@ -212,8 +208,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    // Initiate moving platforms
-    let horizontalPlatformObjects = tilemap.createFromObjects(
+    const horizontalPlatformObjects = tilemap.createFromObjects(
       TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER,
       TILED_HORIZONTAL_MOVING_PLATFORM_KEY,
       { key: HORIZONTAL_PLATFORM_KEY },
@@ -227,30 +222,31 @@ export default class GameScene extends Phaser.Scene {
     }
 
     horizontalPlatformObjects.forEach((platform) => {
-      createMovingPlatform(platform);
-      this.physics.world.enable(platform, Phaser.Physics.Arcade.DYNAMIC_BODY);
-      platform.body.setImmovable(true);
-      platform.body.allowGravity = false;
-      platform.setOrigin(0.5, 0.5);
-
-      // Add tween for their movement
-      this.tweens.add({
-        targets: platform,
-        x: platform.data.list[0].value * TILE_SIZE + platform.x,
-        y: platform.y,
-        ease: 'Linear',
-        duration: Math.abs(platform.data.list[0].value * platform.data.list[2].value),
-        delay: platform.data.list[1].value, // Initial pause before firing
-        repeatDelay: platform.data.list[1].value, // Pause when the tween yoyos (i.e. comes back to original spot)
-        hold: platform.data.list[1].value, // Pause when tween reaches destination
-        yoyo: true,
-        repeat: -1,
-      });
+      createMovingPlatform(platform, this);
     });
 
-    const horizontalPlatforms = this.physics.add.group(horizontalPlatformObjects);
+    const verticalPlatformObjects = tilemap.createFromObjects(
+      TILED_VERTICAL_MOVING_PLATFORMS_LAYER,
+      TILED_VERTICAL_MOVING_PLATFORM_KEY,
+      { key: VERTICAL_PLATFORM_KEY },
+      this
+    );
 
-    return [tilemap, platforms, door, checkpoints, horizontalPlatforms];
+    // If the createFromObjects method fails, it returns null
+    // We just set it to an empty array to not deal with errors
+    if (!verticalPlatformObjects) {
+      verticalPlatformObjects = [];
+    }
+
+    verticalPlatformObjects.forEach((platform) => {
+      createMovingPlatform(platform, this);
+    });
+
+    const movingPlatforms = this.physics.add
+      .group(horizontalPlatformObjects)
+      .addMultiple(verticalPlatformObjects);
+
+    return [tilemap, platforms, door, checkpoints, movingPlatforms];
   }
 
   /**
