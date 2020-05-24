@@ -16,6 +16,8 @@ import {
   TILED_VERTICAL_MOVING_PLATFORMS_LAYER,
   TILED_VERTICAL_MOVING_PLATFORM_KEY,
   VERTICAL_PLATFORM_KEY,
+  TILED_PLATFORM_BOUNDARIES_LAYER,
+  TILE_SIZE,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 
@@ -40,10 +42,6 @@ export default class GameScene extends Phaser.Scene {
      * @type {Array}
      */
     this.levelCheckpoints = [];
-    /**
-     * @type {Phaser.Physics.Arcade.Group}
-     */
-    this.movingPlatforms = null;
   }
 
   init(data) {
@@ -52,9 +50,15 @@ export default class GameScene extends Phaser.Scene {
 
   create() {
     // Setup level
-    const [tilemap, platforms, door, checkpoints, movingPlatforms] = this.setupLevel(this.level);
+    const [
+      tilemap,
+      platforms,
+      door,
+      checkpoints,
+      movingPlatforms,
+      platformBoundaries,
+    ] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
-    this.movingPlatforms = movingPlatforms;
     // Create player
     this.player = this.createPlayer(checkpoints[0].x, checkpoints[0].y);
     // Setup collisions with world
@@ -69,6 +73,20 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.overlap(this.player, door, this.levelComplete, null, this);
     // Setup collisions with moving platforms
     this.physics.add.collider(this.player, movingPlatforms, this.collideMovingPlatform, null, this);
+    this.physics.add.collider(
+      movingPlatforms,
+      platformBoundaries,
+      this.collidePlatformBoundaries,
+      null,
+      this
+    );
+    this.physics.add.collider(
+      movingPlatforms,
+      platforms,
+      this.collidePlatformBoundaries,
+      null,
+      this
+    );
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -90,15 +108,9 @@ export default class GameScene extends Phaser.Scene {
     // Reset these flags every update. This ensures that the movement behaviour
     // only applies if the collision is still true
     this.player.onPlatform = false;
-    this.player.movingPlatform = null;
   }
 
   movePlayer() {
-    if (this.player.onPlatform) {
-      this.player.x += this.player.movingPlatform.deltaX;
-      this.player.y += this.player.movingPlatform.deltaY;
-    }
-
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-PLAYER_SPEED.x);
     } else if (this.cursors.right.isDown) {
@@ -141,7 +153,6 @@ export default class GameScene extends Phaser.Scene {
   createPlayer(x, y) {
     const player = this.physics.add.sprite(x, y, PLAYER_KEY);
     player.onPlatform = false;
-    player.movingPlatform = null;
 
     this.anims.create({
       key: 'idle',
@@ -200,10 +211,28 @@ export default class GameScene extends Phaser.Scene {
 
     // Add checkpoints
     const checkpoints = [];
+    const boundaryObjects = [];
+    let scene = this;
     tilemap.objects.forEach((objectLayer) => {
       if (objectLayer.name.trim() == TILED_CHECKPOINTS_LAYER) {
         objectLayer.objects.forEach((checkpoint) => {
           checkpoints.push(new Phaser.Geom.Point(checkpoint.x, checkpoint.y));
+        });
+      } else if (objectLayer.name.trim() == TILED_PLATFORM_BOUNDARIES_LAYER) {
+        objectLayer.objects.forEach((boundary) => {
+          let rectangle = scene.add.rectangle(
+            boundary.x,
+            boundary.y,
+            TILE_SIZE,
+            TILE_SIZE,
+            '0xff0000'
+          );
+
+          rectangle.setOrigin(0.5, 0.5);
+          scene.physics.world.enable(rectangle, Phaser.Physics.Arcade.DYNAMIC_BODY);
+          rectangle.body.setImmovable(true);
+          rectangle.body.setAllowGravity(false);
+          boundaryObjects.push(rectangle);
         });
       }
     });
@@ -246,7 +275,8 @@ export default class GameScene extends Phaser.Scene {
       .group(horizontalPlatformObjects)
       .addMultiple(verticalPlatformObjects);
 
-    return [tilemap, platforms, door, checkpoints, movingPlatforms];
+    const platformBoundaries = this.physics.add.group(boundaryObjects);
+    return [tilemap, platforms, door, checkpoints, movingPlatforms, platformBoundaries];
   }
 
   /**
@@ -258,6 +288,34 @@ export default class GameScene extends Phaser.Scene {
     if (player.body.touching.down) {
       player.onPlatform = true;
       player.movingPlatform = movingPlatform;
+    }
+  }
+
+  /**
+   * Checks if a player is standing on a moving platform so they could jump
+   * @param platform {Phaser.Physics.Arcade.Sprite}
+   * @param boundary {Phaser.Physics.Arcade.Sprite}
+   */
+  collidePlatformBoundaries(platform, boundary) {
+    platform.body.stop();
+    if (!platform.justHitBoundary) {
+      platform.justHitBoundary = true;
+      // The movement of the platform makes the player jump when they collide
+      // This ensures the player does not go further
+      if (this.player.onPlatform) {
+        this.player.body.setVelocityY(0);
+      }
+
+      // If we wanted to platform to go back and forth without delay, we would
+      // have likely set bounce to 1. Since we have a delay, we use a timer
+      let holdTimer = this.time.addEvent({
+        delay: platform.getHold(),
+        callback: () => {
+          platform.toggleSpeed();
+          platform.body.setVelocity(platform.getSpeedX(), platform.getSpeedY());
+          platform.justHitBoundary = false;
+        },
+      });
     }
   }
 
