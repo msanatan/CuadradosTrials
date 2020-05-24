@@ -6,7 +6,7 @@ import {
   BACKGROUND_KEY,
   getLevelKey,
   HORIZONTAL_PLATFORM_KEY,
-} from './constants';
+} from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
   constructor() {

@@ -13,7 +13,7 @@ import {
   TILED_PLATFORMS_LAYER,
   TILED_CHECKPOINTS_LAYER,
   TILED_TILESET_NAME,
-} from './constants';
+} from '../constants';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
