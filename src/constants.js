@@ -20,6 +20,7 @@ export const TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER = 'HorizontalMovingPlatform
 export const TILED_VERTICAL_MOVING_PLATFORMS_LAYER = 'VerticalMovingPlatforms';
 export const TILED_SPIKES_LAYER = 'Spikes';
 export const TILED_CHECKPOINTS_LAYER = 'Checkpoints';
+export const TILED_PLATFORM_BOUNDARIES_LAYER = 'PlatformBoundaries';
 
 export const TILED_TILESET_NAME = "Cuadrado's Tiles";
 
