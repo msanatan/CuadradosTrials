@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import { TILE_SIZE } from '../constants';
 
 /**
  *
@@ -20,16 +19,16 @@ export const createMovingPlatform = (platform, scene) => {
   };
 
   platform.getSpeedX = function () {
-    return platform.data.list[2].value;
+    return platform.data.list[1].value;
   };
 
   platform.getSpeedY = function () {
-    return platform.data.list[4].value;
+    return platform.data.list[2].value;
   };
 
   platform.toggleSpeed = function () {
+    platform.data.list[1].value = -platform.data.list[1].value;
     platform.data.list[2].value = -platform.data.list[2].value;
-    platform.data.list[4].value = -platform.data.list[4].value;
   };
 
   // Add property for when it hit boundary
