@@ -14,6 +14,7 @@ import {
   TILED_CHECKPOINTS_LAYER,
   TILED_TILESET_NAME,
 } from '../constants';
+import { createMovingPlatform } from '../entities/MovingPlatform';
 
 const PLAYER_SPEED = { x: 200, y: 175 };
 
@@ -86,16 +87,21 @@ export default class GameScene extends Phaser.Scene {
       return;
     }
 
-    // If a player is not on a moving platform, reset the onPlatform flag
-    if (this.player.onPlatform && !this.player.body.touching.down) {
-      this.player.onPlatform = false;
-    }
-
     this.movePlayer();
     this.animatePlayer();
+
+    // Reset these flags every update. This ensures that the movement behaviour
+    // only applies if the collision is still true
+    this.player.onPlatform = false;
+    this.player.movingPlatform = null;
   }
 
   movePlayer() {
+    if (this.player.onPlatform) {
+      this.player.x += this.player.movingPlatform.deltaX;
+      this.player.y += this.player.movingPlatform.deltaY;
+    }
+
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-PLAYER_SPEED.x);
     } else if (this.cursors.right.isDown) {
@@ -138,6 +144,7 @@ export default class GameScene extends Phaser.Scene {
   createPlayer(x, y) {
     const player = this.physics.add.sprite(x, y, PLAYER_KEY);
     player.onPlatform = false;
+    player.movingPlatform = null;
 
     this.anims.create({
       key: 'idle',
@@ -219,6 +226,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     horizontalPlatformObjects.forEach((platform) => {
+      createMovingPlatform(platform);
       this.physics.world.enable(platform, Phaser.Physics.Arcade.DYNAMIC_BODY);
       platform.body.setImmovable(true);
       platform.body.allowGravity = false;
@@ -227,7 +235,7 @@ export default class GameScene extends Phaser.Scene {
       // Add tween for their movement
       this.tweens.add({
         targets: platform,
-        x: (platform.data.list[0].value * 32) + platform.x,
+        x: platform.data.list[0].value * 32 + platform.x,
         y: platform.y,
         ease: 'Linear',
         duration: Math.abs(platform.data.list[0].value * platform.data.list[2].value),
@@ -252,6 +260,7 @@ export default class GameScene extends Phaser.Scene {
   collideMovingPlatform(player, movingPlatform) {
     if (player.body.touching.down) {
       player.onPlatform = true;
+      player.movingPlatform = movingPlatform;
     }
   }
 
