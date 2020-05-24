@@ -3,6 +3,7 @@ export const DOOR_KEY = 'door';
 export const TILES_KEY = 'tiles';
 export const BACKGROUND_KEY = 'background';
 export const HORIZONTAL_PLATFORM_KEY = 'horizontal';
+export const VERTICAL_PLATFORM_KEY = 'vertical';
 
 /**
  * Generates a key for levels

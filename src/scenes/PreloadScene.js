@@ -6,6 +6,7 @@ import {
   BACKGROUND_KEY,
   getLevelKey,
   HORIZONTAL_PLATFORM_KEY,
+  VERTICAL_PLATFORM_KEY,
 } from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -22,6 +23,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image(DOOR_KEY, 'assets/images/door.png');
     this.load.image(BACKGROUND_KEY, 'assets/images/background.png');
     this.load.image(HORIZONTAL_PLATFORM_KEY, 'assets/images/horizontalPlatform.png');
+    this.load.image(VERTICAL_PLATFORM_KEY, 'assets/images/verticalPlatform.png');
     this.load.tilemapTiledJSON(getLevelKey(1), 'assets/levels/level1.json');
     this.load.tilemapTiledJSON(getLevelKey(2), 'assets/levels/level2.json');
     // Load Google Font script
