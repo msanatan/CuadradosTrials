@@ -25,3 +25,5 @@ export const TILED_TILESET_NAME = "Cuadrado's Tiles";
 export const TILED_DOOR_KEY = 'Door';
 export const TILED_HORIZONTAL_MOVING_PLATFORM_KEY = 'Horizontal';
 export const TILED_VERTICAL_MOVING_PLATFORM_KEY = 'Vertical';
+
+export const TILE_SIZE = 32;

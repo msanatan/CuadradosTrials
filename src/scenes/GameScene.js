@@ -13,6 +13,7 @@ import {
   TILED_PLATFORMS_LAYER,
   TILED_CHECKPOINTS_LAYER,
   TILED_TILESET_NAME,
+  TILE_SIZE,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 
@@ -235,7 +236,7 @@ export default class GameScene extends Phaser.Scene {
       // Add tween for their movement
       this.tweens.add({
         targets: platform,
-        x: platform.data.list[0].value * 32 + platform.x,
+        x: platform.data.list[0].value * TILE_SIZE + platform.x,
         y: platform.y,
         ease: 'Linear',
         duration: Math.abs(platform.data.list[0].value * platform.data.list[2].value),
