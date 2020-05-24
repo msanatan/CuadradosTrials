@@ -23,7 +23,7 @@
          "width":25,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
          "id":2,
@@ -36,19 +36,29 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":6
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
+                         "type":"int",
+                         "value":6
+                        },
+                        {
+                         "name":"xSpeed",
                          "type":"int",
                          "value":150
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":0
                         }],
                  "rotation":0,
                  "type":"",
@@ -56,7 +66,7 @@
                  "width":32,
                  "x":352,
                  "y":736
-                }, 
+                },
                 {
                  "gid":4,
                  "height":32,
@@ -64,19 +74,29 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":6
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
+                         "type":"int",
+                         "value":6
+                        },
+                        {
+                         "name":"xSpeed",
                          "type":"int",
                          "value":150
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":0
                         }],
                  "rotation":0,
                  "type":"",
@@ -84,7 +104,7 @@
                  "width":32,
                  "x":384,
                  "y":736
-                }, 
+                },
                 {
                  "gid":4,
                  "height":32,
@@ -92,19 +112,29 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":-8
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
                          "type":"int",
-                         "value":150
+                         "value":-8
+                        },
+                        {
+                         "name":"xSpeed",
+                         "type":"int",
+                         "value":-150
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":0
                         }],
                  "rotation":0,
                  "type":"",
@@ -112,7 +142,7 @@
                  "width":32,
                  "x":416,
                  "y":512
-                }, 
+                },
                 {
                  "gid":4,
                  "height":32,
@@ -120,19 +150,29 @@
                  "name":"Horizontal",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":-8
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
                          "type":"int",
-                         "value":150
+                         "value":-8
+                        },
+                        {
+                         "name":"xSpeed",
+                         "type":"int",
+                         "value":-150
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":0
                         }],
                  "rotation":0,
                  "type":"",
@@ -146,7 +186,7 @@
          "visible":true,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
          "id":6,
@@ -159,19 +199,29 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":-7
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
                          "type":"int",
-                         "value":150
+                         "value":0
+                        },
+                        {
+                         "name":"xSpeed",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":-7
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":-150
                         }],
                  "rotation":0,
                  "type":"",
@@ -179,7 +229,7 @@
                  "width":32,
                  "x":736,
                  "y":736
-                }, 
+                },
                 {
                  "gid":3,
                  "height":32,
@@ -187,19 +237,29 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":-7
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
                          "type":"int",
-                         "value":150
+                         "value":0
+                        },
+                        {
+                         "name":"xSpeed",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":-7
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":-150
                         }],
                  "rotation":0,
                  "type":"",
@@ -207,7 +267,7 @@
                  "width":32,
                  "x":768,
                  "y":736
-                }, 
+                },
                 {
                  "gid":3,
                  "height":32,
@@ -215,19 +275,29 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":-12
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
                          "type":"int",
-                         "value":200
+                         "value":0
+                        },
+                        {
+                         "name":"xSpeed",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":-12
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":-200
                         }],
                  "rotation":0,
                  "type":"",
@@ -235,7 +305,7 @@
                  "width":32,
                  "x":64,
                  "y":512
-                }, 
+                },
                 {
                  "gid":3,
                  "height":32,
@@ -243,19 +313,29 @@
                  "name":"Vertical",
                  "properties":[
                         {
-                         "name":"distance",
-                         "type":"int",
-                         "value":-12
-                        }, 
-                        {
                          "name":"hold",
                          "type":"int",
                          "value":1000
-                        }, 
+                        },
                         {
-                         "name":"speed",
+                         "name":"xDistance",
                          "type":"int",
-                         "value":200
+                         "value":0
+                        },
+                        {
+                         "name":"xSpeed",
+                         "type":"int",
+                         "value":0
+                        },
+                        {
+                         "name":"yDistance",
+                         "type":"int",
+                         "value":-12
+                        },
+                        {
+                         "name":"ySpeed",
+                         "type":"int",
+                         "value":-200
                         }],
                  "rotation":0,
                  "type":"",
@@ -269,7 +349,7 @@
          "visible":true,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
          "id":5,
@@ -291,7 +371,7 @@
          "visible":true,
          "x":0,
          "y":0
-        }, 
+        },
         {
          "draworder":"topdown",
          "id":4,
@@ -334,7 +414,7 @@
          "tilecount":9,
          "tileheight":32,
          "tilewidth":32
-        }, 
+        },
         {
          "columns":1,
          "firstgid":10,
