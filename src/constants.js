@@ -29,4 +29,4 @@ export const TILED_HORIZONTAL_MOVING_PLATFORM_KEY = 'Horizontal';
 export const TILED_VERTICAL_MOVING_PLATFORM_KEY = 'Vertical';
 
 export const TILE_SIZE = 32;
-export const TILE_CORRECTION = 2.5;
+export const TILE_CORRECTION = 1;
