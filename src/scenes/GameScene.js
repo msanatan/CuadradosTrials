@@ -18,6 +18,7 @@ import {
   VERTICAL_PLATFORM_KEY,
   TILED_PLATFORM_BOUNDARIES_LAYER,
   TILE_SIZE,
+  TILE_CORRECTION,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 
@@ -220,18 +221,10 @@ export default class GameScene extends Phaser.Scene {
         });
       } else if (objectLayer.name.trim() == TILED_PLATFORM_BOUNDARIES_LAYER) {
         objectLayer.objects.forEach((boundary) => {
-          let rectangle = scene.add.rectangle(
-            boundary.x,
-            boundary.y,
-            TILE_SIZE,
-            TILE_SIZE,
-            '0xff0000'
-          );
+          let rectangle = scene.add.rectangle(boundary.x, boundary.y, TILE_SIZE, TILE_SIZE);
 
           rectangle.setOrigin(0.5, 0.5);
-          scene.physics.world.enable(rectangle, Phaser.Physics.Arcade.DYNAMIC_BODY);
-          rectangle.body.setImmovable(true);
-          rectangle.body.setAllowGravity(false);
+          scene.physics.world.enable(rectangle, Phaser.Physics.Arcade.STATIC_BODY);
           boundaryObjects.push(rectangle);
         });
       }
@@ -275,7 +268,7 @@ export default class GameScene extends Phaser.Scene {
       .group(horizontalPlatformObjects)
       .addMultiple(verticalPlatformObjects);
 
-    const platformBoundaries = this.physics.add.group(boundaryObjects);
+    const platformBoundaries = this.physics.add.staticGroup(boundaryObjects);
     return [tilemap, platforms, door, checkpoints, movingPlatforms, platformBoundaries];
   }
 
@@ -297,13 +290,30 @@ export default class GameScene extends Phaser.Scene {
    * @param boundary {Phaser.Physics.Arcade.Sprite}
    */
   collidePlatformBoundaries(platform, boundary) {
-    platform.body.stop();
     if (!platform.justHitBoundary) {
+      platform.body.stop();
       platform.justHitBoundary = true;
       // The movement of the platform makes the player jump when they collide
       // This ensures the player does not go further
       if (this.player.onPlatform) {
         this.player.body.setVelocityY(0);
+      }
+
+      // When colliding with other objects, the edges meet. This makes the object
+      // look misaligned with other tiles. So we make a correction if a moving
+      // platform collides with a body (it's not needed with static tiles)
+      if (boundary instanceof Phaser.GameObjects.Rectangle) {
+        if (boundary.body.touching.down) {
+          platform.y = boundary.body.bottom + TILE_CORRECTION + platform.height / 2;
+        } else if (boundary.body.touching.up) {
+          platform.y = boundary.body.top - TILE_CORRECTION - platform.height / 2;
+        }
+
+        if (boundary.body.touching.right) {
+          platform.x = boundary.body.right + TILE_CORRECTION + platform.width / 2;
+        } else if (boundary.body.touching.left) {
+          platform.x = boundary.body.left - TILE_CORRECTION - platform.width / 2;
+        }
       }
 
       // If we wanted to platform to go back and forth without delay, we would
