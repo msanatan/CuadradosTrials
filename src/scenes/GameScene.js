@@ -106,25 +106,37 @@ export default class GameScene extends Phaser.Scene {
     this.movePlayer();
     this.animatePlayer();
 
-    // Reset these flags every update. This ensures that the movement behaviour
-    // only applies if the collision is still true
-    this.player.onPlatform = false;
+    // Reset these flags if a player moved off a platform
+    if (
+      this.player.onPlatform &&
+      !this.player.body.touching.down &&
+      !this.player.movingPlatform.body.touching.up
+    ) {
+      this.player.onPlatform = false;
+      this.player.movingPlatform = null;
+      this.player.body.setGravityY(0);
+    }
   }
 
   movePlayer() {
     if (this.cursors.left.isDown) {
-      this.player.setVelocityX(-PLAYER_SPEED.x);
+      this.player.body.setVelocityX(-PLAYER_SPEED.x);
     } else if (this.cursors.right.isDown) {
-      this.player.setVelocityX(PLAYER_SPEED.x);
+      this.player.body.setVelocityX(PLAYER_SPEED.x);
     } else {
-      this.player.setVelocityX(0);
+      this.player.body.setVelocityX(0);
     }
 
     if (
       (this.cursors.space.isDown || this.cursors.up.isDown) &&
       (this.player.body.onFloor() || this.player.onPlatform)
     ) {
-      this.player.setVelocityY(-PLAYER_SPEED.y);
+      // Reset platform flags when jumping
+      this.player.onPlatform = false;
+      this.player.movingPlatform = null;
+      this.player.body.setGravityY(0);
+      // And actually jump lol
+      this.player.body.setVelocityY(-PLAYER_SPEED.y);
     }
   }
 
@@ -205,10 +217,11 @@ export default class GameScene extends Phaser.Scene {
       { key: DOOR_KEY },
       this
     );
+
+    door.setOrigin(0.5, 0.5);
     this.physics.world.enable(door, Phaser.Physics.Arcade.DYNAMIC_BODY);
     door.body.setImmovable(true);
-    door.body.allowGravity = false;
-    door.setOrigin(0.5, 0.5);
+    door.body.setAllowGravity(false);
 
     // Add checkpoints
     const checkpoints = [];
@@ -278,8 +291,10 @@ export default class GameScene extends Phaser.Scene {
    * @param movingPlatform {Phaser.Physics.Arcade.Sprite}
    */
   collideMovingPlatform(player, movingPlatform) {
-    if (player.body.touching.down) {
+    if (player.body.touching.down && !player.onPlatform) {
       player.onPlatform = true;
+      player.movingPlatform = movingPlatform;
+      player.body.setGravityY(10000);
     }
   }
 
@@ -334,7 +349,7 @@ export default class GameScene extends Phaser.Scene {
    * @param {number} y - Y coordinate
    */
   playerReset(x, y) {
-    this.player.setVelocity(0, 0);
+    this.player.body.setVelocity(0, 0);
     this.player.setFlipX(false);
     this.player.setX(x);
     this.player.setY(y);
