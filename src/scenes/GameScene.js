@@ -280,7 +280,6 @@ export default class GameScene extends Phaser.Scene {
   collideMovingPlatform(player, movingPlatform) {
     if (player.body.touching.down) {
       player.onPlatform = true;
-      player.movingPlatform = movingPlatform;
     }
   }
 
