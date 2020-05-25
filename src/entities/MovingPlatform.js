@@ -37,6 +37,7 @@ export const createMovingPlatform = (platform, scene) => {
   // Configure physics
   scene.physics.world.enable(platform, Phaser.Physics.Arcade.DYNAMIC_BODY);
   platform.body.setFriction(1, 1);
+  platform.body.setBounce(0, 0);
   platform.body.setImmovable(true);
   platform.body.setAllowGravity(false);
   platform.body.setVelocity(platform.getSpeedX(), platform.getSpeedY());
