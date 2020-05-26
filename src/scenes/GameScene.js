@@ -25,8 +25,7 @@ import {
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 import { createSpike } from '../entities/Spike';
-
-const PLAYER_SPEED = { x: 200, y: 200 };
+import { createPlayer, PLAYER_SPEED } from '../entities/Player';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -67,7 +66,7 @@ export default class GameScene extends Phaser.Scene {
     ] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
     // Create player
-    this.player = this.createPlayer(checkpoints[0].x, checkpoints[0].y);
+    this.player = createPlayer(checkpoints[0].x, checkpoints[0].y, PLAYER_KEY, this);
     // Setup collisions with world
     this.player.setCollideWorldBounds(true);
     this.physics.world.checkCollision.up = false;
@@ -168,39 +167,6 @@ export default class GameScene extends Phaser.Scene {
 
   playerHit() {
     this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
-  }
-
-  /**
-   * Creates a new player, accepting it's start coordinates
-   * @param {number} x - X coordinate
-   * @param {number} y - Y coordinate
-   */
-  createPlayer(x, y) {
-    const player = this.physics.add.sprite(x, y, PLAYER_KEY);
-    player.onPlatform = false;
-
-    this.anims.create({
-      key: 'idle',
-      frames: [{ key: PLAYER_KEY, frame: 0 }],
-      frameRate: 2,
-    });
-
-    this.anims.create({
-      key: 'walk',
-      frames: this.anims.generateFrameNumbers(PLAYER_KEY, { start: 0, end: 1 }),
-      frameRate: 10,
-      repeat: -1,
-    });
-
-    this.playerDieTween = {
-      targets: player,
-      alpha: 1,
-      duration: 100,
-      ease: 'Linear',
-      repeat: 10,
-    };
-
-    return player;
   }
 
   setupLevel(level) {
