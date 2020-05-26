@@ -49,7 +49,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.level = data.level ? data.level : 3;
+    this.level = data.level ? data.level : 1;
     this.transitioningLevel = false;
   }
 
