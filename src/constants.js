@@ -4,6 +4,7 @@ export const TILES_KEY = 'tiles';
 export const BACKGROUND_KEY = 'background';
 export const HORIZONTAL_PLATFORM_KEY = 'horizontal';
 export const VERTICAL_PLATFORM_KEY = 'vertical';
+export const SPIKE_KEY = 'spike';
 
 /**
  * Generates a key for levels
@@ -27,6 +28,7 @@ export const TILED_TILESET_NAME = "Cuadrado's Tiles";
 export const TILED_DOOR_KEY = 'Door';
 export const TILED_HORIZONTAL_MOVING_PLATFORM_KEY = 'Horizontal';
 export const TILED_VERTICAL_MOVING_PLATFORM_KEY = 'Vertical';
+export const TILED_SPIKES_Key = 'Spike';
 
 export const TILE_SIZE = 32;
 export const TILE_CORRECTION = 1;
