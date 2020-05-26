@@ -19,10 +19,14 @@ import {
   TILED_PLATFORM_BOUNDARIES_LAYER,
   TILE_SIZE,
   TILE_CORRECTION,
+  TILED_SPIKES_LAYER,
+  TILED_SPIKES_Key,
+  SPIKE_KEY,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
+import { createSpike } from '../entities/Spike';
 
-const PLAYER_SPEED = { x: 200, y: 175 };
+const PLAYER_SPEED = { x: 200, y: 200 };
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -40,13 +44,14 @@ export default class GameScene extends Phaser.Scene {
      */
     this.transitioningLevel = false;
     /**
-     * @type {Array}
+     * @type {Array<Phaser.Geom.Point>}
      */
     this.levelCheckpoints = [];
   }
 
   init(data) {
-    this.level = data.level || 2;
+    this.level = data.level ? data.level : 3;
+    this.transitioningLevel = false;
   }
 
   create() {
@@ -58,6 +63,7 @@ export default class GameScene extends Phaser.Scene {
       checkpoints,
       movingPlatforms,
       platformBoundaries,
+      spikes,
     ] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
     // Create player
@@ -88,6 +94,8 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
+    // Setup collisions with spikes
+    this.physics.add.collider(this.player, spikes, this.playerHit, null, this);
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -156,6 +164,10 @@ export default class GameScene extends Phaser.Scene {
     } else if (this.player.body.velocity.x < 0) {
       this.player.setFlipX(true);
     }
+  }
+
+  playerHit() {
+    this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
   }
 
   /**
@@ -243,7 +255,7 @@ export default class GameScene extends Phaser.Scene {
       }
     });
 
-    const horizontalPlatformObjects = tilemap.createFromObjects(
+    let horizontalPlatformObjects = tilemap.createFromObjects(
       TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER,
       TILED_HORIZONTAL_MOVING_PLATFORM_KEY,
       { key: HORIZONTAL_PLATFORM_KEY },
@@ -260,7 +272,7 @@ export default class GameScene extends Phaser.Scene {
       createMovingPlatform(platform, this);
     });
 
-    const verticalPlatformObjects = tilemap.createFromObjects(
+    let verticalPlatformObjects = tilemap.createFromObjects(
       TILED_VERTICAL_MOVING_PLATFORMS_LAYER,
       TILED_VERTICAL_MOVING_PLATFORM_KEY,
       { key: VERTICAL_PLATFORM_KEY },
@@ -282,7 +294,27 @@ export default class GameScene extends Phaser.Scene {
       .addMultiple(verticalPlatformObjects);
 
     const platformBoundaries = this.physics.add.staticGroup(boundaryObjects);
-    return [tilemap, platforms, door, checkpoints, movingPlatforms, platformBoundaries];
+
+    let spikeObjects = tilemap.createFromObjects(
+      TILED_SPIKES_LAYER,
+      TILED_SPIKES_Key,
+      { key: SPIKE_KEY },
+      this
+    );
+
+    // If the createFromObjects method fails, it returns null
+    // We just set it to an empty array to not deal with errors
+    if (!spikeObjects) {
+      spikeObjects = [];
+    }
+
+    spikeObjects.forEach((spike) => {
+      createSpike(spike, this);
+    });
+
+    const spikes = this.physics.add.group(spikeObjects);
+    // spikes.
+    return [tilemap, platforms, door, checkpoints, movingPlatforms, platformBoundaries, spikes];
   }
 
   /**
