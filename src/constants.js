@@ -1,3 +1,8 @@
+/**
+ * @author       Marcus Sanatan <msanatan@gmail.com>
+ * @copyright    2020 Marcus Sanatan
+ * @description  Cuadrado's Trials
+ */
 export const PLAYER_KEY = 'player';
 export const DOOR_KEY = 'door';
 export const TILES_KEY = 'tiles';
