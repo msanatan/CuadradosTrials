@@ -368,8 +368,8 @@ export default class GameScene extends Phaser.Scene {
     ) {
       const levelCompleteText = this.add
         .text(
-          this.physics.world.bounds.centerX,
-          this.physics.world.bounds.centerY + 40,
+          this.cameras.main.worldView.centerX,
+          this.cameras.main.worldView.centerY - 100,
           'Level Complete!',
           {
             fontFamily: 'Pixel Inversions',
