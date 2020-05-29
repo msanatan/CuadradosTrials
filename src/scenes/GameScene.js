@@ -51,11 +51,24 @@ export default class GameScene extends Phaser.Scene {
      * @type {Array<Phaser.Geom.Point>}
      */
     this.levelCheckpoints = [];
+    /**
+     * @type {number}
+     */
+    this.timeLimit = 0;
+    /**
+     * @type {Phaser.Time.TimerEvent}
+     */
+    this.countDownTimer = null;
+    /**
+     * @type {boolean}
+     */
+    this.levelComplete = false;
   }
 
   init(data) {
     this.level = data.level ? data.level : 1;
     this.transitioningLevel = false;
+    this.levelComplete = false;
   }
 
   create() {
@@ -81,7 +94,7 @@ export default class GameScene extends Phaser.Scene {
     // Setup collisions with platform tiles
     this.physics.add.collider(this.player, platforms);
     // Setup collisions with exit door
-    this.physics.add.overlap(this.player, door, this.levelComplete, null, this);
+    this.physics.add.overlap(this.player, door, this.checkLevelComplete, null, this);
     // Setup collisions with moving platforms
     this.physics.add.collider(this.player, movingPlatforms, this.collideMovingPlatform, null, this);
     this.physics.add.collider(
@@ -107,6 +120,15 @@ export default class GameScene extends Phaser.Scene {
     // Setup camera
     this.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
     this.cameras.main.startFollow(this.player);
+
+    // Initiate countdown timer for level
+    this.countDownTimer = this.time.addEvent({
+      delay: 1000,
+      callback: this.updateTime,
+      callbackScope: this,
+      loop: true,
+    });
+    console.log(this.countDownTimer);
   }
 
   update() {
@@ -127,6 +149,13 @@ export default class GameScene extends Phaser.Scene {
       this.player.onPlatform = false;
       this.player.movingPlatform = null;
       this.player.body.setGravityY(0);
+    }
+  }
+
+  updateTime() {
+    const timeRemaining = this.registry.get('timeRemaining');
+    if (timeRemaining && !this.levelComplete) {
+      this.registry.set('timeRemaining', timeRemaining - 1);
     }
   }
 
@@ -183,6 +212,9 @@ export default class GameScene extends Phaser.Scene {
       tilemap.heightInPixels / 2,
       BACKGROUND_KEY
     );
+
+    // Set time limit for level
+    this.registry.set('timeRemaining', tilemap.properties[0].value);
     let scaleX = tilemap.widthInPixels / background.width;
     let scaleY = tilemap.heightInPixels / background.height;
     let scale = Math.max(scaleX, scaleY);
@@ -284,7 +316,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     const spikes = this.physics.add.group(spikeObjects);
-    // spikes.
+
     return [tilemap, platforms, door, checkpoints, movingPlatforms, platformBoundaries, spikes];
   }
 
@@ -365,12 +397,15 @@ export default class GameScene extends Phaser.Scene {
    * @param player {Phaser.Physics.Arcade.Sprite}
    * @param exitDoor {Phaser.Physics.Arcade.Sprite}
    */
-  levelComplete(player, exitDoor) {
+  checkLevelComplete(player, exitDoor) {
     if (
       player.body.onFloor() &&
       player.y > exitDoor.y &&
       Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18
     ) {
+      this.levelComplete = true;
+
+      // TODO: put the below code in a separate function so it doens't happen every frame
       const levelCompleteText = this.add
         .text(
           this.cameras.main.worldView.centerX,
@@ -384,6 +419,8 @@ export default class GameScene extends Phaser.Scene {
         )
         .setOrigin(0.5);
 
+      const hudScene = this.scene.get('hud-scene');
+
       this.time.addEvent({
         delay: 1500,
         callback: () => {
@@ -393,11 +430,13 @@ export default class GameScene extends Phaser.Scene {
               'camerafadeoutcomplete',
               () => {
                 this.scene.restart({ level: this.level + 1 });
+                hudScene.scene.restart();
               },
               this
             );
 
             this.cameras.main.fadeOut(500, 0, 0, 0, null, this);
+            hudScene.cameras.main.fadeOut(500, 0, 0, 0, null, this);
           }
         },
       });
