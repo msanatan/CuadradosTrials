@@ -27,7 +27,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image(VERTICAL_PLATFORM_KEY, 'assets/images/verticalPlatform.png');
     this.load.image(SPIKE_KEY, 'assets/images/spike.png');
 
-    for (let i = 1; i < 4; i++) {
+    for (let i = 1; i < 5; i++) {
       this.load.tilemapTiledJSON(getLevelKey(i), `assets/levels/level${i}.json`);
     }
     // Load Google Font script
