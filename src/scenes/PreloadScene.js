@@ -49,6 +49,8 @@ export default class PreloadScene extends Phaser.Scene {
       active: () => {
         console.log('Fonts loaded');
         this.scene.start('game-scene');
+        this.scene.start('hud-scene');
+        this.scene.bringToTop('hud-scene');
       },
     });
   }
