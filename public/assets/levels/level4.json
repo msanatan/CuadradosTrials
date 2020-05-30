@@ -1746,6 +1746,41 @@
         }, 
         {
          "draworder":"topdown",
+         "id":8,
+         "name":"Coins",
+         "objects":[
+                {
+                 "gid":13,
+                 "height":32,
+                 "id":149,
+                 "name":"Coin",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":1152,
+                 "y":352
+                }, 
+                {
+                 "gid":13,
+                 "height":32,
+                 "id":150,
+                 "name":"Coin",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":0,
+                 "y":736
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"Checkpoints",
          "objects":[
@@ -1789,8 +1824,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":8,
- "nextobjectid":147,
+ "nextlayerid":9,
+ "nextobjectid":151,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -1840,6 +1875,19 @@
          "tilecount":2,
          "tileheight":32,
          "tilewidth":64
+        }, 
+        {
+         "columns":6,
+         "firstgid":13,
+         "image":"coin.png",
+         "imageheight":32,
+         "imagewidth":192,
+         "margin":0,
+         "name":"Coin",
+         "spacing":0,
+         "tilecount":6,
+         "tileheight":32,
+         "tilewidth":32
         }],
  "tilewidth":32,
  "type":"map",

@@ -26,6 +26,29 @@
         }, 
         {
          "draworder":"topdown",
+         "id":4,
+         "name":"Coins",
+         "objects":[
+                {
+                 "gid":11,
+                 "height":32,
+                 "id":6,
+                 "name":"Coin",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":32,
+                 "x":64,
+                 "y":448
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "draworder":"topdown",
          "id":3,
          "name":"Checkpoints",
          "objects":[
@@ -69,8 +92,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":4,
- "nextobjectid":5,
+ "nextlayerid":5,
+ "nextobjectid":7,
  "orientation":"orthogonal",
  "properties":[
         {
@@ -105,6 +128,19 @@
          "name":"Cuadrado's Tiles",
          "spacing":0,
          "tilecount":9,
+         "tileheight":32,
+         "tilewidth":32
+        }, 
+        {
+         "columns":6,
+         "firstgid":11,
+         "image":"coin.png",
+         "imageheight":32,
+         "imagewidth":192,
+         "margin":0,
+         "name":"Coin",
+         "spacing":0,
+         "tilecount":6,
          "tileheight":32,
          "tilewidth":32
         }],
