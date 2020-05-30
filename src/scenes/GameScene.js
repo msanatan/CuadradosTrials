@@ -69,12 +69,17 @@ export default class GameScene extends Phaser.Scene {
      * @type {Phaser.GameObjects.Particles.ParticleEmitterManager}
      */
     this.playerDeathParticles = null;
+    /**
+     * @type {boolean}
+     */
+    this.playerRebornAnimation = null;
   }
 
   init(data) {
-    this.level = data.level ? data.level : 1;
+    this.level = data.level ? data.level : 4;
     this.transitioningLevel = false;
     this.levelComplete = false;
+    this.playerRebornAnimation = data.died ? data.died : false;
   }
 
   create() {
@@ -137,6 +142,7 @@ export default class GameScene extends Phaser.Scene {
     this.playerDeathParticleEmitter = this.playerDeathParticles.createEmitter({
       x: this.player.x,
       y: this.player.y,
+      blendMode: 'ADD',
       speed: 50,
       lifespan: 1000,
       scale: { start: 1, end: 0 },
@@ -150,12 +156,22 @@ export default class GameScene extends Phaser.Scene {
       callbackScope: this,
       loop: true,
     });
+
+    if (this.playerRebornAnimation) {
+      this.player.setAlpha(0);
+      const tw = this.tweens.add({
+        targets: this.player,
+        alpha: 1,
+        duration: 100,
+        ease: 'Linear',
+        repeat: 10,
+      });
+    }
   }
 
   update() {
     if (this.player.y > this.physics.world.bounds.height) {
-      this.playerDeathParticles.emitParticleAt(this.player.x, this.player.y, PARTICLE_COUNT);
-      this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
+      this.playerDieAndReset();
       return;
     }
 
@@ -227,8 +243,7 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} spike
    */
   playerHit(player, spike) {
-    this.playerDeathParticles.emitParticleAt(player.x, player.y, PARTICLE_COUNT);
-    this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
+    this.playerDieAndReset();
   }
 
   setupLevel(level) {
@@ -406,18 +421,45 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  /**
-   * Resets players to a position in the game world, relative to the tilemap
-   * @param {number} x - X coordinate
-   * @param {number} y - Y coordinate
-   */
-  playerReset(x, y) {
+  playerDieAndReset() {
+    // Emit particles
+    this.playerDeathParticles.emitParticleAt(this.player.x, this.player.y, PARTICLE_COUNT);
+    // Stop player boyd
     this.player.body.setVelocity(0, 0);
-    this.player.setFlipX(false);
-    this.player.setX(x);
-    this.player.setY(y);
-    this.player.setAlpha(0);
-    const tw = this.tweens.add(this.playerDieTween);
+    this.player.disableBody(true, true);
+
+    // Fade scene and reset it
+    this.fadeToScene(1000, 1000, { level: this.level, died: true });
+  }
+
+  /**
+   * Fades to another scene, mostly itself
+   * @param {number} timerDelay
+   * @param {number} cameraFadeTime
+   * @param {Object} sceneData
+   */
+  fadeToScene(timerDelay, cameraFadeTime, sceneData) {
+    const hudScene = this.scene.get('hud-scene');
+
+    this.time.addEvent({
+      delay: timerDelay,
+      callback: () => {
+        if (!this.transitioningLevel) {
+          this.transitioningLevel = true;
+          this.cameras.main.on(
+            'camerafadeoutcomplete',
+            () => {
+              this.scene.restart(sceneData);
+              hudScene.scene.restart();
+            },
+            this
+          );
+
+          this.cameras.main.fadeOut(cameraFadeTime, 0, 0, 0, null, this);
+          hudScene.cameras.main.fadeOut(cameraFadeTime, 0, 0, 0, null, this);
+        }
+      },
+    });
   }
 
   /**
@@ -447,27 +489,7 @@ export default class GameScene extends Phaser.Scene {
         )
         .setOrigin(0.5);
 
-      const hudScene = this.scene.get('hud-scene');
-
-      this.time.addEvent({
-        delay: 1500,
-        callback: () => {
-          if (!this.transitioningLevel) {
-            this.transitioningLevel = true;
-            this.cameras.main.on(
-              'camerafadeoutcomplete',
-              () => {
-                this.scene.restart({ level: this.level + 1 });
-                hudScene.scene.restart();
-              },
-              this
-            );
-
-            this.cameras.main.fadeOut(500, 0, 0, 0, null, this);
-            hudScene.cameras.main.fadeOut(500, 0, 0, 0, null, this);
-          }
-        },
-      });
+      this.fadeToScene(1500, 500, { level: this.level + 1 });
     }
   }
 }
