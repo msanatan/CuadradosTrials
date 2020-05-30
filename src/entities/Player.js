@@ -31,14 +31,6 @@ export const createPlayer = (x, y, imageKey, scene) => {
     repeat: -1,
   });
 
-  scene.playerDieTween = {
-    targets: player,
-    alpha: 1,
-    duration: 100,
-    ease: 'Linear',
-    repeat: 10,
-  };
-
   // Setup collisions with world
   player.setCollideWorldBounds(true);
   scene.physics.world.checkCollision.up = false;
