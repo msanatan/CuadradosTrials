@@ -10,6 +10,7 @@ export const BACKGROUND_KEY = 'background';
 export const HORIZONTAL_PLATFORM_KEY = 'horizontal';
 export const VERTICAL_PLATFORM_KEY = 'vertical';
 export const SPIKE_KEY = 'spike';
+export const PARTICLE_KEY = 'particle';
 
 /**
  * Generates a key for levels
@@ -37,3 +38,5 @@ export const TILED_SPIKES_Key = 'Spike';
 
 export const TILE_SIZE = 32;
 export const TILE_CORRECTION = 1;
+
+export const PARTICLE_COUNT = 10;
