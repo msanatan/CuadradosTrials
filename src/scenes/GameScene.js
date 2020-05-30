@@ -27,6 +27,8 @@ import {
   TILED_SPIKES_LAYER,
   TILED_SPIKES_Key,
   SPIKE_KEY,
+  PARTICLE_KEY,
+  PARTICLE_COUNT,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 import { createSpike } from '../entities/Spike';
@@ -63,6 +65,10 @@ export default class GameScene extends Phaser.Scene {
      * @type {boolean}
      */
     this.levelComplete = false;
+    /**
+     * @type {Phaser.GameObjects.Particles.ParticleEmitterManager}
+     */
+    this.playerDeathParticles = null;
   }
 
   init(data) {
@@ -124,6 +130,19 @@ export default class GameScene extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
     this.cameras.main.startFollow(this.player);
 
+    // Add particles for player death
+    this.playerDeathParticles = this.add.particles(PARTICLE_KEY);
+
+    // Emit particles
+    this.playerDeathParticleEmitter = this.playerDeathParticles.createEmitter({
+      x: this.player.x,
+      y: this.player.y,
+      speed: 50,
+      lifespan: 1000,
+      scale: { start: 1, end: 0 },
+      on: false,
+    });
+
     // Initiate countdown timer for level
     this.countDownTimer = this.time.addEvent({
       delay: 1000,
@@ -135,6 +154,7 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
     if (this.player.y > this.physics.world.bounds.height) {
+      this.playerDeathParticles.emitParticleAt(this.player.x, this.player.y, PARTICLE_COUNT);
       this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
       return;
     }
@@ -201,7 +221,13 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  playerHit() {
+  /**
+   *
+   * @param {Phaser.Physics.Arcade.Sprite} player
+   * @param {Phaser.Physics.Arcade.Sprite} spike
+   */
+  playerHit(player, spike) {
+    this.playerDeathParticles.emitParticleAt(player.x, player.y, PARTICLE_COUNT);
     this.playerReset(this.levelCheckpoints[0].x, this.levelCheckpoints[0].y);
   }
 
