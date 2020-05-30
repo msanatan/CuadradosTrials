@@ -14,6 +14,7 @@ import {
   VERTICAL_PLATFORM_KEY,
   SPIKE_KEY,
   PARTICLE_KEY,
+  COIN_KEY,
 } from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -33,6 +34,10 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image(VERTICAL_PLATFORM_KEY, 'assets/images/verticalPlatform.png');
     this.load.image(SPIKE_KEY, 'assets/images/spike.png');
     this.load.image(PARTICLE_KEY, 'assets/images/particle.png');
+    this.load.spritesheet(COIN_KEY, 'assets/images/coin.png', {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
 
     for (let i = 1; i < 5; i++) {
       this.load.tilemapTiledJSON(getLevelKey(i), `assets/levels/level${i}.json`);
