@@ -39,5 +39,10 @@ export const createPlayer = (x, y, imageKey, scene) => {
     repeat: 10,
   };
 
+  // Setup collisions with world
+  player.setCollideWorldBounds(true);
+  scene.physics.world.checkCollision.up = false;
+  scene.physics.world.checkCollision.down = false;
+
   return player;
 };

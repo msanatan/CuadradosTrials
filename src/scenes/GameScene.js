@@ -83,20 +83,23 @@ export default class GameScene extends Phaser.Scene {
       spikes,
     ] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
-    // Create player
-    this.player = createPlayer(checkpoints[0].x, checkpoints[0].y, PLAYER_KEY, this);
-    // Setup collisions with world
-    this.player.setCollideWorldBounds(true);
-    this.physics.world.checkCollision.up = false;
-    this.physics.world.checkCollision.down = false;
+    // Adjust world size based on level
     this.physics.world.bounds.width = tilemap.widthInPixels;
     this.physics.world.bounds.height = tilemap.heightInPixels;
-    // Setup collisions with platform tiles
+
+    // Create player
+    this.player = createPlayer(checkpoints[0].x, checkpoints[0].y, PLAYER_KEY, this);
+
+    // Setup player collisions with platform tiles
     this.physics.add.collider(this.player, platforms);
-    // Setup collisions with exit door
+    // Setup player collisions with exit door
     this.physics.add.overlap(this.player, door, this.checkLevelComplete, null, this);
-    // Setup collisions with moving platforms
+    // Setup player collisions with spikes
+    this.physics.add.collider(this.player, spikes, this.playerHit, null, this);
+    // Setup player collisions with moving platforms
     this.physics.add.collider(this.player, movingPlatforms, this.collideMovingPlatform, null, this);
+
+    // Setup collisions between moving platforms and the invisible platform boundaries
     this.physics.add.collider(
       movingPlatforms,
       platformBoundaries,
@@ -104,6 +107,8 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
+
+    // Setup collisions between moving platforms and the static platforms
     this.physics.add.collider(
       movingPlatforms,
       platforms,
@@ -111,8 +116,6 @@ export default class GameScene extends Phaser.Scene {
       null,
       this
     );
-    // Setup collisions with spikes
-    this.physics.add.collider(this.player, spikes, this.playerHit, null, this);
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -128,7 +131,6 @@ export default class GameScene extends Phaser.Scene {
       callbackScope: this,
       loop: true,
     });
-    console.log(this.countDownTimer);
   }
 
   update() {
