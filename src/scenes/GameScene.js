@@ -81,6 +81,10 @@ export default class GameScene extends Phaser.Scene {
      * @type {number}
      */
     this.totalCoinsCollected = 0;
+    /**
+     * @type {number}
+     */
+    this.totalPlayerDeaths = 0;
   }
 
   init(data) {
@@ -89,6 +93,7 @@ export default class GameScene extends Phaser.Scene {
     this.level = data.level ? data.level : 1;
     this.playerRebornAnimation = data.died ? data.died : false;
     this.totalCoinsCollected = data.totalCoinsCollected ? data.totalCoinsCollected : 0;
+    this.totalPlayerDeaths = data.totalPlayerDeaths ? data.totalPlayerDeaths : 0;
   }
 
   create() {
@@ -475,6 +480,8 @@ export default class GameScene extends Phaser.Scene {
   playerDieAndReset() {
     // Turn on death flag
     this.player.died = true;
+    // Add 1 to the total player death count
+    this.totalPlayerDeaths += 1;
     // Emit particles
     this.playerDeathParticles.emitParticleAt(this.player.x, this.player.y, PARTICLE_COUNT);
     // Stop player boyd
@@ -482,7 +489,11 @@ export default class GameScene extends Phaser.Scene {
     this.player.disableBody(true, true);
 
     // Fade scene and reset it
-    this.fadeToScene(1000, 1000, { level: this.level, died: true });
+    this.fadeToScene(1000, 1000, {
+      level: this.level,
+      died: true,
+      totalPlayerDeaths: this.totalPlayerDeaths,
+    });
   }
 
   /**
@@ -540,11 +551,12 @@ export default class GameScene extends Phaser.Scene {
             color: '#FFFFFF',
           }
         )
-        .setOrigin(0.5);
+        .setOrigin(0.5, 0.5);
 
       this.fadeToScene(1500, 500, {
         level: this.level + 1,
         totalCoinsCollected: this.totalCoinsCollected,
+        totalPlayerDeaths: this.totalPlayerDeaths,
       });
     }
   }
