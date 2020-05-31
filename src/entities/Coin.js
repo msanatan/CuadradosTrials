@@ -17,6 +17,10 @@ export const createCoin = (coin, scene) => {
   coin.body.setImmovable(true);
   coin.body.setAllowGravity(false);
 
+  // Hack to give it enable/disableBody functions
+  // See here: https://phaser.discourse.group/t/adding-arcade-physics-to-a-sprite/472/8
+  Object.assign(coin, Phaser.Physics.Arcade.Components.Enable);
+
   scene.anims.create({
     key: 'shine',
     frames: scene.anims.generateFrameNumbers(COIN_KEY, { start: 0, end: 5 }),

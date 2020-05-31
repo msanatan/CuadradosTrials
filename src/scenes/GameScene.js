@@ -77,6 +77,10 @@ export default class GameScene extends Phaser.Scene {
      * @type {boolean}
      */
     this.playerRebornAnimation = null;
+    /**
+     * @type {number}
+     */
+    this.coinCount = 0;
   }
 
   init(data) {
@@ -84,6 +88,7 @@ export default class GameScene extends Phaser.Scene {
     this.transitioningLevel = false;
     this.levelComplete = false;
     this.playerRebornAnimation = data.died ? data.died : false;
+    // this.coinCount = data.countCount;
   }
 
   create() {
@@ -114,6 +119,8 @@ export default class GameScene extends Phaser.Scene {
     this.physics.add.collider(this.player, spikes, this.playerHit, null, this);
     // Setup player collisions with moving platforms
     this.physics.add.collider(this.player, movingPlatforms, this.collideMovingPlatform, null, this);
+    // Setup player collisions with coins
+    this.physics.add.overlap(this.player, coins, this.collectCoin, null, this);
 
     // Setup collisions between moving platforms and the invisible platform boundaries
     this.physics.add.collider(
@@ -243,12 +250,23 @@ export default class GameScene extends Phaser.Scene {
   }
 
   /**
-   *
+   * Reset level if player hits a spike
    * @param {Phaser.Physics.Arcade.Sprite} player
    * @param {Phaser.Physics.Arcade.Sprite} spike
    */
   playerHit(player, spike) {
     this.playerDieAndReset();
+  }
+
+  /**
+   *
+   * @param {Phaser.Physics.Arcade.Sprite} player
+   * @param {Phaser.Physics.Arcade.Sprite} coin
+   */
+  collectCoin(player, coin) {
+    this.coinCount += 1;
+    // TODO: play sound and effect for coin
+    coin.disableBody(true, true);
   }
 
   setupLevel(level) {
