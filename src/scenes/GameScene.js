@@ -182,7 +182,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   update() {
-    if (this.player.y > this.physics.world.bounds.height) {
+    if (this.player.y > this.physics.world.bounds.height && !this.player.died) {
       this.playerDieAndReset();
       return;
     }
@@ -467,6 +467,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   playerDieAndReset() {
+    // Turn on death flag
+    this.player.died = true;
     // Emit particles
     this.playerDeathParticles.emitParticleAt(this.player.x, this.player.y, PARTICLE_COUNT);
     // Stop player boyd

@@ -17,6 +17,7 @@ export const PLAYER_SPEED = { x: 200, y: 200 };
 export const createPlayer = (x, y, imageKey, scene) => {
   const player = scene.physics.add.sprite(x, y, imageKey);
   player.onPlatform = false;
+  player.died = false;
 
   scene.anims.create({
     key: 'idle',
