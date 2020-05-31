@@ -2,3 +2,8 @@
   font-family: 'Pixel Inversions';
   src: url('../public/assets/fonts/pixel-inversions.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'VCR OSD Mono';
+  src: url('../public/assets/fonts/vcr-osd-mono.ttf') format('truetype');
+}

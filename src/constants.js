@@ -12,6 +12,7 @@ export const VERTICAL_PLATFORM_KEY = 'vertical';
 export const SPIKE_KEY = 'spike';
 export const PARTICLE_KEY = 'particle';
 export const COIN_KEY = 'coin';
+export const COIN_ICON_KEY = 'coin-icon';
 
 /**
  * Generates a key for levels
