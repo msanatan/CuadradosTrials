@@ -29,10 +29,14 @@ import {
   SPIKE_KEY,
   PARTICLE_KEY,
   PARTICLE_COUNT,
+  TILED_COINS_LAYER,
+  TILED_COIN_KEY,
+  COIN_KEY,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 import { createSpike } from '../entities/Spike';
 import { createPlayer, PLAYER_SPEED } from '../entities/Player';
+import { createCoin } from '../entities/Coin';
 
 export default class GameScene extends Phaser.Scene {
   constructor() {
@@ -76,7 +80,7 @@ export default class GameScene extends Phaser.Scene {
   }
 
   init(data) {
-    this.level = data.level ? data.level : 4;
+    this.level = data.level ? data.level : 1;
     this.transitioningLevel = false;
     this.levelComplete = false;
     this.playerRebornAnimation = data.died ? data.died : false;
@@ -92,6 +96,7 @@ export default class GameScene extends Phaser.Scene {
       movingPlatforms,
       platformBoundaries,
       spikes,
+      coins,
     ] = this.setupLevel(this.level);
     this.levelCheckpoints = checkpoints;
     // Adjust world size based on level
@@ -360,7 +365,29 @@ export default class GameScene extends Phaser.Scene {
 
     const spikes = this.physics.add.group(spikeObjects);
 
-    return [tilemap, platforms, door, checkpoints, movingPlatforms, platformBoundaries, spikes];
+    let coinObjects = tilemap.createFromObjects(
+      TILED_COINS_LAYER,
+      TILED_COIN_KEY,
+      { key: COIN_KEY },
+      this
+    );
+
+    coinObjects.forEach((coin) => {
+      createCoin(coin, this);
+    });
+
+    const coins = this.physics.add.group(coinObjects);
+
+    return [
+      tilemap,
+      platforms,
+      door,
+      checkpoints,
+      movingPlatforms,
+      platformBoundaries,
+      spikes,
+      coins,
+    ];
   }
 
   /**
