@@ -80,15 +80,15 @@ export default class GameScene extends Phaser.Scene {
     /**
      * @type {number}
      */
-    this.coinCount = 0;
+    this.totalCoinsCollected = 0;
   }
 
   init(data) {
-    this.level = data.level ? data.level : 1;
     this.transitioningLevel = false;
     this.levelComplete = false;
+    this.level = data.level ? data.level : 1;
     this.playerRebornAnimation = data.died ? data.died : false;
-    // this.coinCount = data.countCount;
+    this.totalCoinsCollected = data.totalCoinsCollected ? data.totalCoinsCollected : 0;
   }
 
   create() {
@@ -204,7 +204,7 @@ export default class GameScene extends Phaser.Scene {
 
   updateTime() {
     const timeRemaining = this.registry.get('timeRemaining');
-    if (timeRemaining && !this.levelComplete) {
+    if (timeRemaining && !this.levelComplete && !this.player.died) {
       this.registry.set('timeRemaining', timeRemaining - 1);
     }
   }
@@ -264,7 +264,10 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} coin
    */
   collectCoin(player, coin) {
-    this.coinCount += 1;
+    // Update total count of coins collected
+    this.totalCoinsCollected += 1;
+    // Update count of coins collected this level
+    this.registry.set('coinsCollected', this.registry.get('coinsCollected') + 1);
     // TODO: play sound and effect for coin
     coin.disableBody(true, true);
   }
@@ -281,6 +284,7 @@ export default class GameScene extends Phaser.Scene {
 
     // Set time limit for level
     this.registry.set('timeRemaining', tilemap.properties[0].value);
+    // Set total amount of coins for level
     let scaleX = tilemap.widthInPixels / background.width;
     let scaleY = tilemap.heightInPixels / background.height;
     let scale = Math.max(scaleX, scaleY);
@@ -395,6 +399,8 @@ export default class GameScene extends Phaser.Scene {
     });
 
     const coins = this.physics.add.group(coinObjects);
+    this.registry.set('totalCoins', coinObjects.length);
+    this.registry.set('coinsCollected', 0);
 
     return [
       tilemap,
@@ -536,7 +542,10 @@ export default class GameScene extends Phaser.Scene {
         )
         .setOrigin(0.5);
 
-      this.fadeToScene(1500, 500, { level: this.level + 1 });
+      this.fadeToScene(1500, 500, {
+        level: this.level + 1,
+        totalCoinsCollected: this.totalCoinsCollected,
+      });
     }
   }
 }
