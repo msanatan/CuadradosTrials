@@ -15,6 +15,7 @@ export const COIN_KEY = 'coin';
 export const COIN_ICON_KEY = 'coin-icon';
 export const CERTIFICATE_BACKGROUND_KEY = 'certificate-background';
 export const CUADRADO_BIG_KEY = 'cuadrado-big';
+export const TITLE_BACKGROUND_KEY = 'title-background';
 
 /**
  * Generates a key for levels

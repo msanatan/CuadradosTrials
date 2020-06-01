@@ -18,6 +18,7 @@ import {
   COIN_ICON_KEY,
   CERTIFICATE_BACKGROUND_KEY,
   CUADRADO_BIG_KEY,
+  TITLE_BACKGROUND_KEY,
 } from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -88,6 +89,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image(COIN_ICON_KEY, 'assets/images/coin-icon.png');
     this.load.image(CERTIFICATE_BACKGROUND_KEY, 'assets/images/certificate-background.png');
     this.load.image(CUADRADO_BIG_KEY, 'assets/images/cuadrado-big.png');
+    this.load.image(TITLE_BACKGROUND_KEY, 'assets/images/title-background.png');
 
     // Load level (Tiled map files)
     for (let i = 1; i < 5; i++) {
@@ -105,9 +107,7 @@ export default class PreloadScene extends Phaser.Scene {
         urls: ['../fonts.css'],
       },
       active: () => {
-        this.scene.start('game-scene');
-        this.scene.start('hud-scene');
-        this.scene.bringToTop('hud-scene');
+        this.scene.start('title-scene');
       },
     });
   }
