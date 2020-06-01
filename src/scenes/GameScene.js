@@ -528,6 +528,7 @@ export default class GameScene extends Phaser.Scene {
       level: this.level,
       died: true,
       totalPlayerDeaths: this.totalPlayerDeaths,
+      totalCoinsCollected: this.totalCoinsCollected,
     });
   }
 
