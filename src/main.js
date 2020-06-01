@@ -8,6 +8,7 @@ import GameScene from './scenes/GameScene';
 import PreloadScene from './scenes/PreloadScene';
 import HUDScene from './scenes/HUDScene';
 import GameCompleteScene from './scenes/GameCompleteScene';
+import TitleScene from './scenes/TitleScene';
 
 const config = {
   type: Phaser.AUTO,
@@ -28,7 +29,7 @@ const config = {
       },
     },
   },
-  scene: [PreloadScene, GameScene, HUDScene, GameCompleteScene],
+  scene: [PreloadScene, TitleScene, GameScene, HUDScene, GameCompleteScene],
 };
 
 export default new Phaser.Game(config);
