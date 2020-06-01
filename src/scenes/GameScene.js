@@ -32,6 +32,10 @@ import {
   TILED_COINS_LAYER,
   TILED_COIN_KEY,
   COIN_KEY,
+  AUDIO_PLAYER_JUMP_KEY,
+  AUDIO_PLAYER_DIES_KEY,
+  AUDIO_PLAYER_COLLECTS_COIN_KEY,
+  AUDIO_LEVEL_COMPLETE_KEY,
 } from '../constants';
 import { createMovingPlatform } from '../entities/MovingPlatform';
 import { createSpike } from '../entities/Spike';
@@ -247,7 +251,8 @@ export default class GameScene extends Phaser.Scene {
       this.player.onPlatform = false;
       this.player.movingPlatform = null;
       this.player.body.setGravityY(0);
-      // And actually jump lol
+
+      this.sound.play(AUDIO_PLAYER_JUMP_KEY);
       this.player.body.setVelocityY(-PLAYER_SPEED.y);
     }
   }
@@ -285,6 +290,7 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} coin
    */
   collectCoin(player, coin) {
+    this.sound.play(AUDIO_PLAYER_COLLECTS_COIN_KEY);
     // Update count of coins collected this level
     this.registry.set('coinsCollected', this.registry.get('coinsCollected') + 1);
     // TODO: play sound and effect for coin
@@ -500,6 +506,8 @@ export default class GameScene extends Phaser.Scene {
   playerDieAndReset(showTimeUpMessage) {
     // Turn on death flag
     this.player.died = true;
+    // Play death sound
+    this.sound.play(AUDIO_PLAYER_DIES_KEY);
     // Add 1 to the total player death count
     this.totalPlayerDeaths += 1;
     // Emit particles
@@ -575,6 +583,7 @@ export default class GameScene extends Phaser.Scene {
       !this.levelComplete
     ) {
       this.levelComplete = true;
+      this.sound.play(AUDIO_LEVEL_COMPLETE_KEY);
       this.totalCoinsCollected += this.registry.get('coinsCollected');
 
       if (this.finalLevel) {
