@@ -4,7 +4,12 @@
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
-import { CERTIFICATE_BACKGROUND_KEY, CUADRADO_BIG_KEY } from '../constants';
+import {
+  CERTIFICATE_BACKGROUND_KEY,
+  CUADRADO_BIG_KEY,
+  AUDIO_GAME_COMPLETE_KEY,
+  AUDIO_MENU_SELECT_KEY,
+} from '../constants';
 
 export default class GameCompleteScene extends Phaser.Scene {
   constructor() {
@@ -88,11 +93,19 @@ export default class GameCompleteScene extends Phaser.Scene {
 
     // Setup input listener
     this.cursors = this.input.keyboard.createCursorKeys();
+
+    // Play game complete song
+    this.sceneMusic = this.sound.add(AUDIO_GAME_COMPLETE_KEY, {
+      loop: true,
+    });
+    this.sceneMusic.play();
   }
 
   update() {
     if (this.cursors.space.isDown && !this.transitioningScene) {
       this.transitioningScene = true;
+      this.sceneMusic.stop();
+      this.sound.play(AUDIO_MENU_SELECT_KEY);
       this.restartGame();
     }
   }
