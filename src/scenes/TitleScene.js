@@ -4,7 +4,7 @@
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
-import { TITLE_BACKGROUND_KEY, PLAYER_KEY } from '../constants';
+import { TITLE_BACKGROUND_KEY, PLAYER_KEY, AUDIO_MENU_SELECT_KEY } from '../constants';
 
 export default class TitleScene extends Phaser.Scene {
   constructor() {
@@ -64,6 +64,7 @@ export default class TitleScene extends Phaser.Scene {
   update() {
     if (this.cursors.space.isDown && !this.transitioningScene) {
       this.transitioningScene = true;
+      this.sound.play(AUDIO_MENU_SELECT_KEY);
       this.startGame();
     }
   }
