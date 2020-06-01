@@ -13,7 +13,7 @@ export default class GameCompleteScene extends Phaser.Scene {
 
   init(data) {
     this.totalCoins = data.totalCoins;
-    this.coinsCollected = data.coinsCollected;
+    this.totalCoinsCollected = data.totalCoinsCollected;
     this.totalPlayerDeaths = data.totalPlayerDeaths;
   }
 
@@ -50,7 +50,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     const totalCoinsText = this.add.text(
       350,
       350,
-      `COINS COLLECTED: ${this.coinsCollected} / ${this.totalCoins}`,
+      `COINS COLLECTED: ${this.totalCoinsCollected} / ${this.totalCoins}`,
       {
         fontFamily: 'Minecraft',
         fontSize: '24px',
