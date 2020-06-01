@@ -13,6 +13,8 @@ export const SPIKE_KEY = 'spike';
 export const PARTICLE_KEY = 'particle';
 export const COIN_KEY = 'coin';
 export const COIN_ICON_KEY = 'coin-icon';
+export const CERTIFICATE_BACKGROUND_KEY = 'certificate-background';
+export const CUADRADO_BIG_KEY = 'cuadrado-big';
 
 /**
  * Generates a key for levels

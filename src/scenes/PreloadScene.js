@@ -16,6 +16,8 @@ import {
   PARTICLE_KEY,
   COIN_KEY,
   COIN_ICON_KEY,
+  CERTIFICATE_BACKGROUND_KEY,
+  CUADRADO_BIG_KEY,
 } from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -84,7 +86,10 @@ export default class PreloadScene extends Phaser.Scene {
       frameHeight: 32,
     });
     this.load.image(COIN_ICON_KEY, 'assets/images/coin-icon.png');
+    this.load.image(CERTIFICATE_BACKGROUND_KEY, 'assets/images/certificate-background.png');
+    this.load.image(CUADRADO_BIG_KEY, 'assets/images/cuadrado-big.png');
 
+    // Load level (Tiled map files)
     for (let i = 1; i < 5; i++) {
       this.load.tilemapTiledJSON(getLevelKey(i), `assets/levels/level${i}.json`);
     }
@@ -96,11 +101,10 @@ export default class PreloadScene extends Phaser.Scene {
     // Load fonts
     WebFont.load({
       custom: {
-        families: ['Pixel Inversions', 'VCR OSD Mono'],
+        families: ['Pixel Inversions', 'VCR OSD Mono', 'Minecraft'],
         urls: ['../fonts.css'],
       },
       active: () => {
-        console.log('Fonts loaded');
         this.scene.start('game-scene');
         this.scene.start('hud-scene');
         this.scene.bringToTop('hud-scene');
