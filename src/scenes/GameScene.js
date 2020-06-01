@@ -404,7 +404,12 @@ export default class GameScene extends Phaser.Scene {
     });
 
     const coins = this.physics.add.group(coinObjects);
-    this.registry.set('totalCoins', coinObjects.length);
+    // Add the max coins from each level so that we know the total amount of
+    // collectible coins at the end.
+    const totalCoins = this.registry.get('totalCoins')
+      ? this.registry.get('totalCoins') + coinObjects.length
+      : coinObjects.length;
+    this.registry.set('totalCoins', totalCoins);
     this.registry.set('coinsCollected', 0);
 
     return [
