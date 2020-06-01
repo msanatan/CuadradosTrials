@@ -30,7 +30,7 @@ export default class HUDScene extends Phaser.Scene {
 
     // Display time remaining text
     this.timeRemainingText = this.add.text(
-      680,
+      640,
       20,
       this.getTimeReaminingText(this.registry.get('timeRemaining')),
       hudTextConfig
