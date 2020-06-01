@@ -19,6 +19,11 @@ import {
   CERTIFICATE_BACKGROUND_KEY,
   CUADRADO_BIG_KEY,
   TITLE_BACKGROUND_KEY,
+  AUDIO_LEVEL_COMPLETE_KEY,
+  AUDIO_MENU_SELECT_KEY,
+  AUDIO_PLAYER_COLLECTS_COIN_KEY,
+  AUDIO_PLAYER_DIES_KEY,
+  AUDIO_PLAYER_JUMP_KEY,
 } from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -90,6 +95,13 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.image(CERTIFICATE_BACKGROUND_KEY, 'assets/images/certificate-background.png');
     this.load.image(CUADRADO_BIG_KEY, 'assets/images/cuadrado-big.png');
     this.load.image(TITLE_BACKGROUND_KEY, 'assets/images/title-background.png');
+
+    // Load audio for game
+    this.load.audio(AUDIO_LEVEL_COMPLETE_KEY, 'assets/audio/sfx_sounds_fanfare3.wav');
+    this.load.audio(AUDIO_MENU_SELECT_KEY, 'assets/audio/sfx_menu_select4.wav');
+    this.load.audio(AUDIO_PLAYER_COLLECTS_COIN_KEY, 'assets/audio/sfx_coin_double7.wav');
+    this.load.audio(AUDIO_PLAYER_DIES_KEY, 'assets/audio/sfx_deathscream_robot3.wav');
+    this.load.audio(AUDIO_PLAYER_JUMP_KEY, 'assets/audio/sfx_movement_jump15.wav');
 
     // Load level (Tiled map files)
     for (let i = 1; i < 5; i++) {

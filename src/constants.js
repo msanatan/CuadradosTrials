@@ -17,6 +17,12 @@ export const CERTIFICATE_BACKGROUND_KEY = 'certificate-background';
 export const CUADRADO_BIG_KEY = 'cuadrado-big';
 export const TITLE_BACKGROUND_KEY = 'title-background';
 
+export const AUDIO_MENU_SELECT_KEY = 'menu-select';
+export const AUDIO_PLAYER_JUMP_KEY = 'player-jump';
+export const AUDIO_LEVEL_COMPLETE_KEY = 'level-complete';
+export const AUDIO_PLAYER_DIES_KEY = 'player-dies';
+export const AUDIO_PLAYER_COLLECTS_COIN_KEY = 'player-collects-coin';
+
 /**
  * Generates a key for levels
  * @param {number} levelNum - Level identifier
