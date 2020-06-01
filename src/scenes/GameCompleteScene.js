@@ -15,6 +15,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     this.totalCoins = data.totalCoins;
     this.totalCoinsCollected = data.totalCoinsCollected;
     this.totalPlayerDeaths = data.totalPlayerDeaths;
+    this.transitioningScene = false;
   }
 
   create() {
@@ -65,5 +66,45 @@ export default class GameCompleteScene extends Phaser.Scene {
       color: '#000000',
     });
     totalDeathsText.setOrigin(0, 0);
+
+    // Add text to restart game
+    const beginText = this.add.text(400, 552, 'PRESS <SPACE> TO RETURN TO TITLE SCREEN', {
+      fontFamily: 'Minecraft',
+      fontSize: '16px',
+      color: '#0000000',
+    });
+    beginText.setOrigin(0.5, 0.5);
+
+    // Make text blink to attract attention
+    beginText.setAlpha(0);
+    const tw = this.tweens.add({
+      targets: beginText,
+      alpha: 1,
+      duration: 1000,
+      ease: 'Linear',
+      repeat: -1,
+      yoyo: true,
+    });
+
+    // Setup input listener
+    this.cursors = this.input.keyboard.createCursorKeys();
+  }
+
+  update() {
+    if (this.cursors.space.isDown && !this.transitioningScene) {
+      this.transitioningScene = true;
+      this.restartGame();
+    }
+  }
+
+  restartGame() {
+    this.cameras.main.fadeOut(1000, 0, 0, 0, null, this);
+    this.cameras.main.on(
+      'camerafadeoutcomplete',
+      () => {
+        this.scene.start('title-scene');
+      },
+      this
+    );
   }
 }
