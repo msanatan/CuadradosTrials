@@ -227,10 +227,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.body.setVelocityX(0);
     }
 
-    if (
-      (this.cursors.space.isDown || this.cursors.up.isDown) &&
-      (this.player.body.onFloor() || this.player.onPlatform)
-    ) {
+    if (this.cursors.space.isDown && (this.player.body.onFloor() || this.player.onPlatform)) {
       // Reset platform flags when jumping
       this.player.onPlatform = false;
       this.player.movingPlatform = null;
