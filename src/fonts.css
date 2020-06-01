@@ -7,3 +7,8 @@
   font-family: 'VCR OSD Mono';
   src: url('../public/assets/fonts/vcr-osd-mono.ttf') format('truetype');
 }
+
+@font-face {
+  font-family: 'Minecraft';
+  src: url('../public/assets/fonts/minecraft.ttf') format('truetype');
+}
