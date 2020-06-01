@@ -85,6 +85,10 @@ export default class GameScene extends Phaser.Scene {
      * @type {number}
      */
     this.totalPlayerDeaths = 0;
+    /**
+     * @type {boolean}
+     */
+    this.finalLevel = false;
   }
 
   init(data) {
@@ -287,8 +291,11 @@ export default class GameScene extends Phaser.Scene {
       BACKGROUND_KEY
     );
 
+    // Determine whether this is the last level of the game or not
+    this.finalLevel = tilemap.properties[0].value;
+
     // Set time limit for level
-    this.registry.set('timeRemaining', tilemap.properties[0].value);
+    this.registry.set('timeRemaining', tilemap.properties[1].value);
     // Set total amount of coins for level
     let scaleX = tilemap.widthInPixels / background.width;
     let scaleY = tilemap.heightInPixels / background.height;
@@ -404,12 +411,7 @@ export default class GameScene extends Phaser.Scene {
     });
 
     const coins = this.physics.add.group(coinObjects);
-    // Add the max coins from each level so that we know the total amount of
-    // collectible coins at the end.
-    const totalCoins = this.registry.get('totalCoins')
-      ? this.registry.get('totalCoins') + coinObjects.length
-      : coinObjects.length;
-    this.registry.set('totalCoins', totalCoins);
+    this.registry.set('totalCoins', coinObjects.length);
     this.registry.set('coinsCollected', 0);
 
     return [
@@ -540,10 +542,22 @@ export default class GameScene extends Phaser.Scene {
     if (
       player.body.onFloor() &&
       player.y > exitDoor.y &&
-      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18
+      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18 &&
+      !this.levelComplete
     ) {
       this.levelComplete = true;
 
+      if (this.finalLevel) {
+        const hudScene = this.scene.get('hud-scene');
+        hudScene.scene.stop();
+        this.scene.start('game-complete-scene', {
+          totalCoins: 8,
+          totalCoinsCollected: this.totalCoinsCollected,
+          totalPlayerDeaths: this.totalPlayerDeaths,
+        });
+
+        return;
+      }
       // TODO: put the below code in a separate function so it doens't happen every frame
       const levelCompleteText = this.add
         .text(
