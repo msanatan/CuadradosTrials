@@ -1829,6 +1829,11 @@
  "orientation":"orthogonal",
  "properties":[
         {
+         "name":"finalLevel",
+         "type":"bool",
+         "value":true
+        }, 
+        {
          "name":"timeLimit",
          "type":"int",
          "value":75

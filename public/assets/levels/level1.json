@@ -97,6 +97,11 @@
  "orientation":"orthogonal",
  "properties":[
         {
+         "name":"finalLevel",
+         "type":"bool",
+         "value":false
+        }, 
+        {
          "name":"timeLimit",
          "type":"int",
          "value":30
