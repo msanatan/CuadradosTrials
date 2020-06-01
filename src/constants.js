@@ -22,6 +22,7 @@ export const AUDIO_PLAYER_JUMP_KEY = 'player-jump';
 export const AUDIO_LEVEL_COMPLETE_KEY = 'level-complete';
 export const AUDIO_PLAYER_DIES_KEY = 'player-dies';
 export const AUDIO_PLAYER_COLLECTS_COIN_KEY = 'player-collects-coin';
+export const AUDIO_GAME_COMPLETE_KEY = 'game-complete';
 
 /**
  * Generates a key for levels

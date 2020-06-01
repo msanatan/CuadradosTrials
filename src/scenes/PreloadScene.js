@@ -24,6 +24,7 @@ import {
   AUDIO_PLAYER_COLLECTS_COIN_KEY,
   AUDIO_PLAYER_DIES_KEY,
   AUDIO_PLAYER_JUMP_KEY,
+  AUDIO_GAME_COMPLETE_KEY,
 } from '../constants';
 
 export default class PreloadScene extends Phaser.Scene {
@@ -102,6 +103,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.audio(AUDIO_PLAYER_COLLECTS_COIN_KEY, 'assets/audio/sfx_coin_double7.wav');
     this.load.audio(AUDIO_PLAYER_DIES_KEY, 'assets/audio/sfx_deathscream_robot3.wav');
     this.load.audio(AUDIO_PLAYER_JUMP_KEY, 'assets/audio/sfx_movement_jump15.wav');
+    this.load.audio(AUDIO_GAME_COMPLETE_KEY, 'assets/audio/game_complete.wav');
 
     // Load level (Tiled map files)
     for (let i = 1; i < 5; i++) {
