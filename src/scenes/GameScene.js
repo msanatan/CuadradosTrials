@@ -273,8 +273,6 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} coin
    */
   collectCoin(player, coin) {
-    // Update total count of coins collected
-    this.totalCoinsCollected += 1;
     // Update count of coins collected this level
     this.registry.set('coinsCollected', this.registry.get('coinsCollected') + 1);
     // TODO: play sound and effect for coin
@@ -546,6 +544,7 @@ export default class GameScene extends Phaser.Scene {
       !this.levelComplete
     ) {
       this.levelComplete = true;
+      this.totalCoinsCollected += this.registry.get('coinsCollected');
 
       if (this.finalLevel) {
         const hudScene = this.scene.get('hud-scene');
@@ -558,19 +557,18 @@ export default class GameScene extends Phaser.Scene {
 
         return;
       }
-      // TODO: put the below code in a separate function so it doens't happen every frame
-      const levelCompleteText = this.add
-        .text(
-          this.cameras.main.worldView.centerX,
-          this.cameras.main.worldView.centerY - 100,
-          'Level Complete!',
-          {
-            fontFamily: 'Pixel Inversions',
-            fontSize: 44,
-            color: '#FFFFFF',
-          }
-        )
-        .setOrigin(0.5, 0.5);
+
+      const levelCompleteText = this.add.text(
+        this.cameras.main.worldView.centerX,
+        this.cameras.main.worldView.centerY - 100,
+        'Level Complete!',
+        {
+          fontFamily: 'Pixel Inversions',
+          fontSize: 44,
+          color: '#FFFFFF',
+        }
+      );
+      levelCompleteText.setOrigin(0.5, 0.5);
 
       this.fadeToScene(1500, 500, {
         level: this.level + 1,
