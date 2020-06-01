@@ -8,7 +8,6 @@ import {
   DOOR_KEY,
   PLAYER_KEY,
   TILES_KEY,
-  BACKGROUND_KEY,
   getLevelKey,
   TILED_EXIT_DOOR_LAYER,
   TILED_DOOR_KEY,
@@ -164,6 +163,7 @@ export default class GameScene extends Phaser.Scene {
     // Setup camera
     this.cameras.main.setBounds(0, 0, tilemap.widthInPixels, tilemap.heightInPixels);
     this.cameras.main.startFollow(this.player);
+    this.cameras.main.setBackgroundColor('#cbdbfc');
 
     // Add particles for player death
     this.playerDeathParticles = this.add.particles(PARTICLE_KEY);
@@ -300,23 +300,12 @@ export default class GameScene extends Phaser.Scene {
   setupLevel(level) {
     // Add Tiled level
     const tilemap = this.make.tilemap({ key: getLevelKey(level) });
-    // Add background image
-    const background = this.add.image(
-      tilemap.widthInPixels / 2,
-      tilemap.heightInPixels / 2,
-      BACKGROUND_KEY
-    );
 
     // Determine whether this is the last level of the game or not
     this.finalLevel = tilemap.properties[0].value;
 
     // Set time limit for level
     this.registry.set('timeRemaining', tilemap.properties[1].value);
-    // Set total amount of coins for level
-    let scaleX = tilemap.widthInPixels / background.width;
-    let scaleY = tilemap.heightInPixels / background.height;
-    let scale = Math.max(scaleX, scaleY);
-    background.setScale(scale).setScrollFactor(0);
 
     // Display Tiled level
     const tileset = tilemap.addTilesetImage(TILED_TILESET_NAME, TILES_KEY);

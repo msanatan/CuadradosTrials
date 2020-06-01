@@ -8,7 +8,6 @@ import {
   DOOR_KEY,
   PLAYER_KEY,
   TILES_KEY,
-  BACKGROUND_KEY,
   getLevelKey,
   HORIZONTAL_PLATFORM_KEY,
   VERTICAL_PLATFORM_KEY,
@@ -83,7 +82,6 @@ export default class PreloadScene extends Phaser.Scene {
     });
     this.load.image(TILES_KEY, 'assets/images/tiles.png');
     this.load.image(DOOR_KEY, 'assets/images/door.png');
-    this.load.image(BACKGROUND_KEY, 'assets/images/background.png');
     this.load.image(HORIZONTAL_PLATFORM_KEY, 'assets/images/horizontalPlatform.png');
     this.load.image(VERTICAL_PLATFORM_KEY, 'assets/images/verticalPlatform.png');
     this.load.image(SPIKE_KEY, 'assets/images/spike.png');
