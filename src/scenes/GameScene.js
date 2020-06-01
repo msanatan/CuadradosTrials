@@ -89,11 +89,16 @@ export default class GameScene extends Phaser.Scene {
      * @type {boolean}
      */
     this.finalLevel = false;
+    /**
+     * @type {boolean}
+     */
+    this.timeUp = false;
   }
 
   init(data) {
     this.transitioningLevel = false;
     this.levelComplete = false;
+    this.timeUp = false;
     this.level = data.level ? data.level : 1;
     this.playerRebornAnimation = data.died ? data.died : false;
     this.totalCoinsCollected = data.totalCoinsCollected ? data.totalCoinsCollected : 0;
@@ -192,7 +197,13 @@ export default class GameScene extends Phaser.Scene {
 
   update() {
     if (this.player.y > this.physics.world.bounds.height && !this.player.died) {
-      this.playerDieAndReset();
+      this.playerDieAndReset(false);
+      return;
+    }
+
+    // If time's up, restart the level
+    if (this.timeUp && !this.player.died) {
+      this.playerDieAndReset(true);
       return;
     }
 
@@ -213,8 +224,12 @@ export default class GameScene extends Phaser.Scene {
 
   updateTime() {
     const timeRemaining = this.registry.get('timeRemaining');
-    if (timeRemaining && !this.levelComplete && !this.player.died) {
+    if (timeRemaining && !this.levelComplete && !this.player.died && timeRemaining > 0) {
       this.registry.set('timeRemaining', timeRemaining - 1);
+    }
+
+    if (timeRemaining <= 0) {
+      this.timeUp = true;
     }
   }
 
@@ -261,7 +276,7 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} spike
    */
   playerHit(player, spike) {
-    this.playerDieAndReset();
+    this.playerDieAndReset(false);
   }
 
   /**
@@ -479,7 +494,10 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  playerDieAndReset() {
+  /**
+   * @param {boolean} showTimeUpMessage
+   */
+  playerDieAndReset(showTimeUpMessage) {
     // Turn on death flag
     this.player.died = true;
     // Add 1 to the total player death count
@@ -490,8 +508,23 @@ export default class GameScene extends Phaser.Scene {
     this.player.body.setVelocity(0, 0);
     this.player.disableBody(true, true);
 
+    // Display "Time's Up" message when time reaches 0
+    if (showTimeUpMessage) {
+      const timeUpText = this.add.text(
+        this.cameras.main.worldView.centerX,
+        this.cameras.main.worldView.centerY - 100,
+        "Time's Up!",
+        {
+          fontFamily: 'Pixel Inversions',
+          fontSize: 44,
+          color: '#FFFFFF',
+        }
+      );
+      timeUpText.setOrigin(0.5, 0.5);
+    }
+
     // Fade scene and reset it
-    this.fadeToScene(1000, 1000, {
+    this.fadeToScene(2000, 1000, {
       level: this.level,
       died: true,
       totalPlayerDeaths: this.totalPlayerDeaths,
