@@ -1,6 +1,6 @@
 /**
  * @author       Marcus Sanatan <msanatan@gmail.com>
- * @copyright    2020 Marcus Sanatan
+ * @copyright    2021 Marcus Sanatan
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
@@ -10,22 +10,24 @@ import HUDScene from './scenes/HUDScene';
 import GameCompleteScene from './scenes/GameCompleteScene';
 import TitleScene from './scenes/TitleScene';
 
-const config = {
+const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
   width: 800,
   height: 600,
-  pixelArt: true,
+  render: {
+    pixelArt: true
+  },
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 800,
-    height: 600,
+    height: 600
   },
   physics: {
     default: 'arcade',
     arcade: {
       fps: 60,
       gravity: {
-        y: 350,
+        y: 350
       },
     },
   },

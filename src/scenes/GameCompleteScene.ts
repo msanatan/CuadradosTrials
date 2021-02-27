@@ -1,6 +1,6 @@
 /**
  * @author       Marcus Sanatan <msanatan@gmail.com>
- * @copyright    2020 Marcus Sanatan
+ * @copyright    2021 Marcus Sanatan
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
@@ -16,14 +16,14 @@ export default class GameCompleteScene extends Phaser.Scene {
     super('game-complete-scene');
   }
 
-  init(data) {
+  init(data: object): void {
     this.totalCoins = data.totalCoins;
     this.totalCoinsCollected = data.totalCoinsCollected;
     this.totalPlayerDeaths = data.totalPlayerDeaths;
     this.transitioningScene = false;
   }
 
-  create() {
+  create(): void {
     // Load background with borders
     const backgroundImage = this.add.image(0, 0, CERTIFICATE_BACKGROUND_KEY);
     backgroundImage.setOrigin(0, 0);
@@ -101,7 +101,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     this.sceneMusic.play();
   }
 
-  update() {
+  update(): void {
     if (this.cursors.space.isDown && !this.transitioningScene) {
       this.transitioningScene = true;
       this.sceneMusic.stop();
@@ -110,7 +110,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     }
   }
 
-  restartGame() {
+  restartGame(): void {
     this.cameras.main.fadeOut(1000, 0, 0, 0, null, this);
     this.cameras.main.on(
       'camerafadeoutcomplete',

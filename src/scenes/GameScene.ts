@@ -1,6 +1,6 @@
 /**
  * @author       Marcus Sanatan <msanatan@gmail.com>
- * @copyright    2020 Marcus Sanatan
+ * @copyright    2021 Marcus Sanatan
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
@@ -98,7 +98,7 @@ export default class GameScene extends Phaser.Scene {
     this.timeUp = false;
   }
 
-  init(data) {
+  init(data: object): void {
     this.transitioningLevel = false;
     this.levelComplete = false;
     this.timeUp = false;
@@ -108,7 +108,7 @@ export default class GameScene extends Phaser.Scene {
     this.totalPlayerDeaths = data.totalPlayerDeaths ? data.totalPlayerDeaths : 0;
   }
 
-  create() {
+  create(): void {
     // Setup level
     const [
       tilemap,
@@ -199,7 +199,7 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  update() {
+  update(): void {
     if (this.player.y > this.physics.world.bounds.height && !this.player.died) {
       this.playerDieAndReset(false);
       return;
@@ -226,7 +226,7 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  updateTime() {
+  updateTime(): void {
     const timeRemaining = this.registry.get('timeRemaining');
     if (timeRemaining && !this.levelComplete && !this.player.died && timeRemaining > 0) {
       this.registry.set('timeRemaining', timeRemaining - 1);
@@ -237,7 +237,7 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  movePlayer() {
+  movePlayer(): void {
     if (this.cursors.left.isDown) {
       this.player.body.setVelocityX(-PLAYER_SPEED.x);
     } else if (this.cursors.right.isDown) {
@@ -257,7 +257,7 @@ export default class GameScene extends Phaser.Scene {
     }
   }
 
-  animatePlayer() {
+  animatePlayer(): void {
     if (
       this.player.body.velocity.x !== 0 &&
       (this.player.body.onFloor() || this.player.onPlatform)
@@ -280,7 +280,7 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} player
    * @param {Phaser.Physics.Arcade.Sprite} spike
    */
-  playerHit(player, spike) {
+  playerHit(player, spike): void {
     this.playerDieAndReset(false);
   }
 
@@ -289,7 +289,7 @@ export default class GameScene extends Phaser.Scene {
    * @param {Phaser.Physics.Arcade.Sprite} player
    * @param {Phaser.Physics.Arcade.Sprite} coin
    */
-  collectCoin(player, coin) {
+  collectCoin(player, coin): void {
     this.sound.play(AUDIO_PLAYER_COLLECTS_COIN_KEY);
     // Update count of coins collected this level
     this.registry.set('coinsCollected', this.registry.get('coinsCollected') + 1);
@@ -297,7 +297,7 @@ export default class GameScene extends Phaser.Scene {
     coin.disableBody(true, true);
   }
 
-  setupLevel(level) {
+  setupLevel(level): any[] {
     // Add Tiled level
     const tilemap = this.make.tilemap({ key: getLevelKey(level) });
 
@@ -436,7 +436,7 @@ export default class GameScene extends Phaser.Scene {
    * @param player {Phaser.Physics.Arcade.Sprite}
    * @param movingPlatform {Phaser.Physics.Arcade.Sprite}
    */
-  collideMovingPlatform(player, movingPlatform) {
+  collideMovingPlatform(player, movingPlatform): void {
     if (player.body.touching.down && !player.onPlatform) {
       player.onPlatform = true;
       player.movingPlatform = movingPlatform;
@@ -490,9 +490,9 @@ export default class GameScene extends Phaser.Scene {
   }
 
   /**
-   * @param {boolean} showTimeUpMessage
+   * @param showTimeUpMessage
    */
-  playerDieAndReset(showTimeUpMessage) {
+  playerDieAndReset(showTimeUpMessage: boolean): void {
     // Turn on death flag
     this.player.died = true;
     // Play death sound
@@ -531,11 +531,11 @@ export default class GameScene extends Phaser.Scene {
 
   /**
    * Fades to another scene, mostly itself
-   * @param {number} timerDelay
-   * @param {number} cameraFadeTime
-   * @param {Object} sceneData
+   * @param timerDelay
+   * @param cameraFadeTime
+   * @param sceneData
    */
-  fadeToScene(timerDelay, cameraFadeTime, sceneData) {
+  fadeToScene(timerDelay: number, cameraFadeTime: number, sceneData: object): void {
     const hudScene = this.scene.get('hud-scene');
 
     this.time.addEvent({
@@ -564,7 +564,7 @@ export default class GameScene extends Phaser.Scene {
    * @param player {Phaser.Physics.Arcade.Sprite}
    * @param exitDoor {Phaser.Physics.Arcade.Sprite}
    */
-  checkLevelComplete(player, exitDoor) {
+  checkLevelComplete(player, exitDoor): void {
     if (
       player.body.onFloor() &&
       player.y > exitDoor.y &&

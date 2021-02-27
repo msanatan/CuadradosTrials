@@ -1,6 +1,6 @@
 /**
  * @author       Marcus Sanatan <msanatan@gmail.com>
- * @copyright    2020 Marcus Sanatan
+ * @copyright    2021 Marcus Sanatan
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
@@ -19,7 +19,7 @@ export default class HUDScene extends Phaser.Scene {
     this.coinsRetrievedText = null;
   }
 
-  create() {
+  create(): void {
     const hudTextConfig = {
       fontFamily: 'VCR OSD Mono',
       fontSize: '18px',
@@ -57,25 +57,25 @@ export default class HUDScene extends Phaser.Scene {
   }
 
   /**
-   * @param {number} timeRemaining
+   * @param timeRemaining - time remaining to complete a level
    */
-  getTimeReaminingText(timeRemaining) {
+  getTimeReaminingText(timeRemaining: number): string {
     return `TIME: ${timeRemaining}`;
   }
 
   /**
-   * @param {number} coinsCollected
-   * @param {number} totalCoins
+   * @param coinsCollected - amount of coins in a level that was collected
+   * @param totalCoins - total coins available in a level
    */
-  getCoinsRetrievedText(coinsCollected, totalCoins) {
+  getCoinsRetrievedText(coinsCollected: number, totalCoins: number): string {
     return `COINS: ${coinsCollected} / ${totalCoins}`;
   }
 
-  updateTime() {
+  updateTime(): void {
     this.timeRemainingText.setText(this.getTimeReaminingText(this.registry.get('timeRemaining')));
   }
 
-  updateCoinsCollected() {
+  updateCoinsCollected(): void {
     this.coinsRetrievedText.setText(
       this.getCoinsRetrievedText(
         this.registry.get('coinsCollected'),

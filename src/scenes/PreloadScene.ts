@@ -1,6 +1,6 @@
 /**
  * @author       Marcus Sanatan <msanatan@gmail.com>
- * @copyright    2020 Marcus Sanatan
+ * @copyright    2021 Marcus Sanatan
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
@@ -31,7 +31,7 @@ export default class PreloadScene extends Phaser.Scene {
     super('preload-scene');
   }
 
-  preload() {
+  preload(): void {
     // Add progress bars
     const progressBar = this.add.graphics();
     const progressBox = this.add.graphics();
@@ -46,7 +46,7 @@ export default class PreloadScene extends Phaser.Scene {
       text: 'LOADING',
       style: {
         font: '32px "Courier New"',
-        fill: '#ffffff',
+        color: '#ffffff',
       },
     });
     loadingText.setOrigin(0.5, 0.5);
@@ -57,7 +57,7 @@ export default class PreloadScene extends Phaser.Scene {
       text: '0%',
       style: {
         font: '18px monospace',
-        fill: '#ffffff',
+        color: '#ffffff',
       },
     });
     percentText.setOrigin(0.5, 0.5);
@@ -111,7 +111,7 @@ export default class PreloadScene extends Phaser.Scene {
     this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
-  create() {
+  create(): void {
     // Load fonts
     WebFont.load({
       custom: {

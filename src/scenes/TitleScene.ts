@@ -1,6 +1,6 @@
 /**
  * @author       Marcus Sanatan <msanatan@gmail.com>
- * @copyright    2020 Marcus Sanatan
+ * @copyright    2021 Marcus Sanatan
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
@@ -9,13 +9,10 @@ import { TITLE_BACKGROUND_KEY, PLAYER_KEY, AUDIO_MENU_SELECT_KEY } from '../cons
 export default class TitleScene extends Phaser.Scene {
   constructor() {
     super('title-scene');
-    /**
-     * @type {boolean}
-     */
     this.transitioningScene = false;
   }
 
-  create() {
+  create(): void {
     const backgroundImage = this.add.image(0, 0, TITLE_BACKGROUND_KEY);
     backgroundImage.setOrigin(0, 0);
 
@@ -61,7 +58,7 @@ export default class TitleScene extends Phaser.Scene {
     this.cursors = this.input.keyboard.createCursorKeys();
   }
 
-  update() {
+  update(): void {
     if (this.cursors.space.isDown && !this.transitioningScene) {
       this.transitioningScene = true;
       this.sound.play(AUDIO_MENU_SELECT_KEY);
@@ -69,7 +66,7 @@ export default class TitleScene extends Phaser.Scene {
     }
   }
 
-  startGame() {
+  startGame(): void {
     this.cameras.main.fadeOut(1000, 0, 0, 0, null, this);
     this.cameras.main.on(
       'camerafadeoutcomplete',
