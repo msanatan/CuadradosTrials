@@ -1,10 +1,10 @@
 {
   "name": "cuadrados-trials",
   "version": "0.2.0",
-  "description": "",
+  "description": "A simple, fun platformer made with Phaser",
   "main": "index.js",
   "scripts": {
-    "build": "npm run clean && parcel build src/index.html --no-source-maps --public-url . --out-dir dist",
+    "build": "yarn clean && parcel build src/index.html --no-source-maps --public-url . --out-dir dist",
     "start": "parcel src/index.html",
     "clean": "rm -rfv dist/*",
     "test": "eslint src",
