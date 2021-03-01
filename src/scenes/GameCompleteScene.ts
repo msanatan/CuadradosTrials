@@ -31,7 +31,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     // Add certificate text
     const certificateText = this.add.text(400, 150, 'CERTIFICATE', {
       fontFamily: 'Minecraft',
-      fontSize: '84px',
+      fontSize: '7em',
       color: '#d95763',
     });
     certificateText.setOrigin(0.5, 0.5);
@@ -42,7 +42,7 @@ export default class GameCompleteScene extends Phaser.Scene {
       'Congratulations little Cuadrado on Completion of the Super Robot Trials!',
       {
         fontFamily: 'Minecraft',
-        fontSize: '16px',
+        fontSize: '1.75em',
         color: '#000000',
       }
     );
@@ -59,7 +59,7 @@ export default class GameCompleteScene extends Phaser.Scene {
       `COINS COLLECTED: ${this.totalCoinsCollected} / ${this.totalCoins}`,
       {
         fontFamily: 'Minecraft',
-        fontSize: '24px',
+        fontSize: '2.5em',
         color: '#000000',
       }
     );
@@ -67,7 +67,7 @@ export default class GameCompleteScene extends Phaser.Scene {
 
     const totalDeathsText = this.add.text(350, 380, `# OF DEATHS: ${this.totalPlayerDeaths}`, {
       fontFamily: 'Minecraft',
-      fontSize: '24px',
+      fontSize: '2.5em',
       color: '#000000',
     });
     totalDeathsText.setOrigin(0, 0);
@@ -75,7 +75,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     // Add text to restart game
     const beginText = this.add.text(400, 552, 'PRESS <SPACE> TO RETURN TO TITLE SCREEN', {
       fontFamily: 'Minecraft',
-      fontSize: '16px',
+      fontSize: '2em',
       color: '#0000000',
     });
     beginText.setOrigin(0.5, 0.5);
