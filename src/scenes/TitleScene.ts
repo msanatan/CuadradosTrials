@@ -5,11 +5,14 @@
  */
 import Phaser from 'phaser';
 import { TITLE_BACKGROUND_KEY, PLAYER_KEY, AUDIO_MENU_SELECT_KEY } from '../constants';
+import Player from '../entities/Player';
 
 export default class TitleScene extends Phaser.Scene {
+  transitioningScene: boolean = false;
+  cursors: Phaser.Types.Input.Keyboard.CursorKeys = null;
+
   constructor() {
     super('title-scene');
-    this.transitioningScene = false;
   }
 
   create(): void {
@@ -19,26 +22,25 @@ export default class TitleScene extends Phaser.Scene {
     // Add title text
     const certificateText = this.add.text(400, 75, "CUADRADO'S TRIALS", {
       fontFamily: 'Minecraft',
-      fontSize: '64px',
+      fontSize: '6em',
       color: '#d95763',
     });
     certificateText.setOrigin(0.5, 0.5);
 
     // Add play moving animation
-    const player = this.physics.add.sprite(400, 328, PLAYER_KEY);
+    const player = new Player(this, 400, 328, PLAYER_KEY);
     this.anims.create({
-      key: 'walk',
+      key: 'playerWalk',
       frames: this.anims.generateFrameNumbers(PLAYER_KEY, { start: 0, end: 1 }),
-      frameRate: 10,
-      repeat: -1,
+      frameRate: 10
     });
     player.body.setAllowGravity(false);
-    player.anims.play('walk', true);
+    player.play({ key: 'playerWalk', repeat: -1 });
 
     // Add text to tell player to press Spacebar to start
     const beginText = this.add.text(400, 554, 'PRESS <SPACE> TO BEGIN', {
       fontFamily: 'Minecraft',
-      fontSize: '16px',
+      fontSize: '2em',
       color: '#FFFFFF',
     });
     beginText.setOrigin(0.5, 0.5);
