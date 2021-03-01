@@ -10,92 +10,50 @@ import {
   TILES_KEY,
   getLevelKey,
   TILED_EXIT_DOOR_LAYER,
-  TILED_DOOR_KEY,
   TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER,
-  TILED_HORIZONTAL_MOVING_PLATFORM_KEY,
   HORIZONTAL_PLATFORM_KEY,
   TILED_PLATFORMS_LAYER,
   TILED_CHECKPOINTS_LAYER,
   TILED_TILESET_NAME,
   TILED_VERTICAL_MOVING_PLATFORMS_LAYER,
-  TILED_VERTICAL_MOVING_PLATFORM_KEY,
   VERTICAL_PLATFORM_KEY,
   TILED_PLATFORM_BOUNDARIES_LAYER,
   TILE_SIZE,
-  TILE_CORRECTION,
   TILED_SPIKES_LAYER,
-  TILED_SPIKES_Key,
   SPIKE_KEY,
   PARTICLE_KEY,
   PARTICLE_COUNT,
   TILED_COINS_LAYER,
-  TILED_COIN_KEY,
   COIN_KEY,
   AUDIO_PLAYER_JUMP_KEY,
   AUDIO_PLAYER_DIES_KEY,
   AUDIO_PLAYER_COLLECTS_COIN_KEY,
   AUDIO_LEVEL_COMPLETE_KEY,
 } from '../constants';
-import { createMovingPlatform } from '../entities/MovingPlatform';
-import { createSpike } from '../entities/Spike';
-import { createPlayer, PLAYER_SPEED } from '../entities/Player';
-import { createCoin } from '../entities/Coin';
+import MovingPlatform from '../entities/MovingPlatform';
+import Spike from '../entities/Spike';
+import Player from '../entities/Player';
+import Coin from '../entities/Coin';
 
 export default class GameScene extends Phaser.Scene {
+  finalLevel: boolean = false;
+  level: number = 1;
+  levelComplete: boolean = false;
+  totalCoinsCollected: number = 0;
+  totalPlayerDeaths: number = 0;
+  timeLimit: number = 0;
+  transitioningLevel: boolean = false;
+  timeUp: boolean = false;
+  playerRebornAnimation: boolean = false;
+  player: Player = null;
+  PLAYER_SPEED = { x: 200, y: 200 };
+  levelCheckpoints: Array<Phaser.Geom.Point> = [];
+  countDownTimer: Phaser.Time.TimerEvent = null;
+  playerDeathParticles: Phaser.GameObjects.Particles.ParticleEmitterManager = null;
+  cursors: Phaser.Types.Input.Keyboard.CursorKeys = null;
+
   constructor() {
     super('game-scene');
-    /**
-     * @type {Phaser.Physics.Arcade.Sprite}
-     */
-    this.player = null;
-    /**
-     * @type {number}
-     */
-    this.level = null;
-    /**
-     * @type {boolean}
-     */
-    this.transitioningLevel = false;
-    /**
-     * @type {Array<Phaser.Geom.Point>}
-     */
-    this.levelCheckpoints = [];
-    /**
-     * @type {number}
-     */
-    this.timeLimit = 0;
-    /**
-     * @type {Phaser.Time.TimerEvent}
-     */
-    this.countDownTimer = null;
-    /**
-     * @type {boolean}
-     */
-    this.levelComplete = false;
-    /**
-     * @type {Phaser.GameObjects.Particles.ParticleEmitterManager}
-     */
-    this.playerDeathParticles = null;
-    /**
-     * @type {boolean}
-     */
-    this.playerRebornAnimation = null;
-    /**
-     * @type {number}
-     */
-    this.totalCoinsCollected = 0;
-    /**
-     * @type {number}
-     */
-    this.totalPlayerDeaths = 0;
-    /**
-     * @type {boolean}
-     */
-    this.finalLevel = false;
-    /**
-     * @type {boolean}
-     */
-    this.timeUp = false;
   }
 
   init(data: object): void {
@@ -109,6 +67,8 @@ export default class GameScene extends Phaser.Scene {
   }
 
   create(): void {
+    this.setupAnimations();
+
     // Setup level
     const [
       tilemap,
@@ -120,13 +80,16 @@ export default class GameScene extends Phaser.Scene {
       spikes,
       coins,
     ] = this.setupLevel(this.level);
+
     this.levelCheckpoints = checkpoints;
     // Adjust world size based on level
     this.physics.world.bounds.width = tilemap.widthInPixels;
     this.physics.world.bounds.height = tilemap.heightInPixels;
+    this.physics.world.checkCollision.up = false;
+    this.physics.world.checkCollision.down = false;
 
     // Create player
-    this.player = createPlayer(checkpoints[0].x, checkpoints[0].y, PLAYER_KEY, this);
+    this.player = new Player(this, checkpoints[0].x, checkpoints[0].y, PLAYER_KEY);
 
     // Setup player collisions with platform tiles
     this.physics.add.collider(this.player, platforms);
@@ -239,9 +202,9 @@ export default class GameScene extends Phaser.Scene {
 
   movePlayer(): void {
     if (this.cursors.left.isDown) {
-      this.player.body.setVelocityX(-PLAYER_SPEED.x);
+      this.player.body.setVelocityX(-this.PLAYER_SPEED.x);
     } else if (this.cursors.right.isDown) {
-      this.player.body.setVelocityX(PLAYER_SPEED.x);
+      this.player.body.setVelocityX(this.PLAYER_SPEED.x);
     } else {
       this.player.body.setVelocityX(0);
     }
@@ -253,7 +216,7 @@ export default class GameScene extends Phaser.Scene {
       this.player.body.setGravityY(0);
 
       this.sound.play(AUDIO_PLAYER_JUMP_KEY);
-      this.player.body.setVelocityY(-PLAYER_SPEED.y);
+      this.player.body.setVelocityY(-this.PLAYER_SPEED.y);
     }
   }
 
@@ -262,9 +225,9 @@ export default class GameScene extends Phaser.Scene {
       this.player.body.velocity.x !== 0 &&
       (this.player.body.onFloor() || this.player.onPlatform)
     ) {
-      this.player.anims.play('walk', true);
+      this.player.play({ key: 'playerWalk' });
     } else {
-      this.player.anims.play('idle', true);
+      this.player.play({ key: 'playerIdle' });
     }
 
     // Check direction of animations
@@ -277,19 +240,19 @@ export default class GameScene extends Phaser.Scene {
 
   /**
    * Reset level if player hits a spike
-   * @param {Phaser.Physics.Arcade.Sprite} player
-   * @param {Phaser.Physics.Arcade.Sprite} spike
+   * @param player
+   * @param spike
    */
-  playerHit(player, spike): void {
+  playerHit(player: Player, spike: Spike): void {
     this.playerDieAndReset(false);
   }
 
   /**
    *
-   * @param {Phaser.Physics.Arcade.Sprite} player
-   * @param {Phaser.Physics.Arcade.Sprite} coin
+   * @param player
+   * @param coin
    */
-  collectCoin(player, coin): void {
+  collectCoin(player: Player, coin: Coin): void {
     this.sound.play(AUDIO_PLAYER_COLLECTS_COIN_KEY);
     // Update count of coins collected this level
     this.registry.set('coinsCollected', this.registry.get('coinsCollected') + 1);
@@ -297,7 +260,7 @@ export default class GameScene extends Phaser.Scene {
     coin.disableBody(true, true);
   }
 
-  setupLevel(level): any[] {
+  setupLevel(level: number): any[] {
     // Add Tiled level
     const tilemap = this.make.tilemap({ key: getLevelKey(level) });
 
@@ -309,114 +272,84 @@ export default class GameScene extends Phaser.Scene {
 
     // Display Tiled level
     const tileset = tilemap.addTilesetImage(TILED_TILESET_NAME, TILES_KEY);
-    const platforms = tilemap.createStaticLayer(TILED_PLATFORMS_LAYER, tileset, 0, 0);
-    platforms.setCollisionByExclusion(-1, true);
+    const platforms = tilemap.createLayer(TILED_PLATFORMS_LAYER, tileset, 0, 0);
+    platforms.setCollisionByExclusion([-1], true);
 
     // Add door
-    const [door] = tilemap.createFromObjects(
-      TILED_EXIT_DOOR_LAYER,
-      TILED_DOOR_KEY,
-      { key: DOOR_KEY },
-      this
-    );
-
-    door.setOrigin(0.5, 0.5);
-    this.physics.world.enable(door, Phaser.Physics.Arcade.DYNAMIC_BODY);
+    let door = null;
+    tilemap.getObjectLayer(TILED_EXIT_DOOR_LAYER)?.objects.forEach((doorObject) => {
+      const tiledWorldPositions = platforms.tileToWorldXY(doorObject.x, doorObject.y);
+      door = this.physics.add.sprite(doorObject.x, doorObject.y, DOOR_KEY);
+    });
+    door.setOrigin(0, 1);
     door.body.setImmovable(true);
     door.body.setAllowGravity(false);
 
     // Add checkpoints
     const checkpoints = [];
+    tilemap.getObjectLayer(TILED_CHECKPOINTS_LAYER)?.objects.forEach((checkpoint) => {
+      checkpoints.push(new Phaser.Geom.Point(checkpoint.x, checkpoint.y));
+    });
+
     const boundaryObjects = [];
-    let scene = this;
-    tilemap.objects.forEach((objectLayer) => {
-      if (objectLayer.name.trim() == TILED_CHECKPOINTS_LAYER) {
-        objectLayer.objects.forEach((checkpoint) => {
-          checkpoints.push(new Phaser.Geom.Point(checkpoint.x, checkpoint.y));
-        });
-      } else if (objectLayer.name.trim() == TILED_PLATFORM_BOUNDARIES_LAYER) {
-        objectLayer.objects.forEach((boundary) => {
-          let rectangle = scene.add.rectangle(boundary.x, boundary.y, TILE_SIZE, TILE_SIZE);
-
-          rectangle.setOrigin(0.5, 0.5);
-          scene.physics.world.enable(rectangle, Phaser.Physics.Arcade.STATIC_BODY);
-          boundaryObjects.push(rectangle);
-        });
-      }
+    tilemap.getObjectLayer(TILED_PLATFORM_BOUNDARIES_LAYER)?.objects.forEach((boundary) => {
+      let rectangle = this.add.rectangle(boundary.x, boundary.y, TILE_SIZE, TILE_SIZE);
+      rectangle.setOrigin(0.5, 0.5);
+      this.physics.world.enable(rectangle, Phaser.Physics.Arcade.STATIC_BODY);
+      boundaryObjects.push(rectangle);
     });
 
-    let horizontalPlatformObjects = tilemap.createFromObjects(
-      TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER,
-      TILED_HORIZONTAL_MOVING_PLATFORM_KEY,
-      { key: HORIZONTAL_PLATFORM_KEY },
-      this
-    );
-
-    // If the createFromObjects method fails, it returns null
-    // We just set it to an empty array to not deal with errors
-    if (!horizontalPlatformObjects) {
-      horizontalPlatformObjects = [];
-    }
-
-    horizontalPlatformObjects.forEach((platform) => {
-      createMovingPlatform(platform, this);
+    // Add moving platforms, if any
+    const movingPlatforms = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
+      classType: MovingPlatform,
+      frictionX: 1,
+      frictionY: 1,
+      bounceX: 0,
+      bounceY: 0
     });
 
-    let verticalPlatformObjects = tilemap.createFromObjects(
-      TILED_VERTICAL_MOVING_PLATFORMS_LAYER,
-      TILED_VERTICAL_MOVING_PLATFORM_KEY,
-      { key: VERTICAL_PLATFORM_KEY },
-      this
-    );
-
-    // If the createFromObjects method fails, it returns null
-    // We just set it to an empty array to not deal with errors
-    if (!verticalPlatformObjects) {
-      verticalPlatformObjects = [];
-    }
-
-    verticalPlatformObjects.forEach((platform) => {
-      createMovingPlatform(platform, this);
+    tilemap.getObjectLayer(TILED_HORIZONTAL_MOVING_PLATFORMS_LAYER)?.objects.forEach((platformObject) => {
+      movingPlatforms.add(new MovingPlatform(this, platformObject, HORIZONTAL_PLATFORM_KEY));
     });
 
-    const movingPlatforms = this.physics.add
-      .group(horizontalPlatformObjects)
-      .addMultiple(verticalPlatformObjects);
+    tilemap.getObjectLayer(TILED_VERTICAL_MOVING_PLATFORMS_LAYER)?.objects.forEach((platformObject) => {
+      movingPlatforms.add(new MovingPlatform(this, platformObject, VERTICAL_PLATFORM_KEY));
+    });
+
+    // Set velocity in this loop as it's different for every moving platform
+    Phaser.Actions.Call(movingPlatforms.getChildren(), (mp) => {
+      let platform = mp as MovingPlatform;
+      platform.body.setVelocity(platform.speedX, platform.speedY);
+    }, this);
 
     const platformBoundaries = this.physics.add.staticGroup(boundaryObjects);
 
-    let spikeObjects = tilemap.createFromObjects(
-      TILED_SPIKES_LAYER,
-      TILED_SPIKES_Key,
-      { key: SPIKE_KEY },
-      this
-    );
-
-    // If the createFromObjects method fails, it returns null
-    // We just set it to an empty array to not deal with errors
-    if (!spikeObjects) {
-      spikeObjects = [];
-    }
-
-    spikeObjects.forEach((spike) => {
-      createSpike(spike, this);
+    // Add spikes
+    const spikes = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
+      classType: Spike
     });
 
-    const spikes = this.physics.add.group(spikeObjects);
+    spikes.addMultiple(tilemap.createFromObjects(TILED_SPIKES_LAYER, {
+      key: SPIKE_KEY
+    })
 
-    let coinObjects = tilemap.createFromObjects(
-      TILED_COINS_LAYER,
-      TILED_COIN_KEY,
-      { key: COIN_KEY },
-      this
-    );
-
-    coinObjects.forEach((coin) => {
-      createCoin(coin, this);
+    // Add coins
+    const coins = this.physics.add.group({
+      allowGravity: false,
+      immovable: true,
+      classType: Coin
     });
 
-    const coins = this.physics.add.group(coinObjects);
-    this.registry.set('totalCoins', coinObjects.length);
+    tilemap.getObjectLayer(TILED_COINS_LAYER).objects.forEach((coinObject) => {
+      coins.create(coinObject.x, coinObject.y, COIN_KEY);
+    });
+    coins.playAnimation('coinShine');
+
+    this.registry.set('totalCoins', coins.getChildren().length);
     this.registry.set('coinsCollected', 0);
 
     return [
@@ -433,10 +366,10 @@ export default class GameScene extends Phaser.Scene {
 
   /**
    * Checks if a player is standing on a moving platform so they could jump
-   * @param player {Phaser.Physics.Arcade.Sprite}
-   * @param movingPlatform {Phaser.Physics.Arcade.Sprite}
+   * @param player
+   * @param movingPlatform
    */
-  collideMovingPlatform(player, movingPlatform): void {
+  collideMovingPlatform(player: Player, movingPlatform: MovingPlatform): void {
     if (player.body.touching.down && !player.onPlatform) {
       player.onPlatform = true;
       player.movingPlatform = movingPlatform;
@@ -446,10 +379,10 @@ export default class GameScene extends Phaser.Scene {
 
   /**
    * Checks if a player is standing on a moving platform so they could jump
-   * @param platform {Phaser.Physics.Arcade.Sprite}
-   * @param boundary {Phaser.Physics.Arcade.Sprite}
+   * @param platform
+   * @param boundary
    */
-  collidePlatformBoundaries(platform, boundary) {
+  collidePlatformBoundaries(platform: MovingPlatform, boundary: Phaser.GameObjects.Rectangle): void {
     if (!platform.justHitBoundary) {
       platform.body.stop();
       platform.justHitBoundary = true;
@@ -459,33 +392,13 @@ export default class GameScene extends Phaser.Scene {
         this.player.body.setVelocityY(0);
       }
 
-      // When colliding with other objects, the edges meet. This makes the object
-      // look misaligned with other tiles. So we make a correction if a moving
-      // platform collides with a body (it's not needed with static tiles)
-      if (boundary instanceof Phaser.GameObjects.Rectangle) {
-        if (boundary.body.touching.down) {
-          platform.y = boundary.body.bottom + TILE_CORRECTION + platform.height / 2;
-        } else if (boundary.body.touching.up) {
-          platform.y = boundary.body.top - TILE_CORRECTION - platform.height / 2;
-        }
-
-        if (boundary.body.touching.right) {
-          platform.x = boundary.body.right + TILE_CORRECTION + platform.width / 2;
-        } else if (boundary.body.touching.left) {
-          platform.x = boundary.body.left - TILE_CORRECTION - platform.width / 2;
-        }
-      }
-
       // If we wanted to platform to go back and forth without delay, we would
       // have likely set bounce to 1. Since we have a delay, we use a timer
-      let holdTimer = this.time.addEvent({
-        delay: platform.getHold(),
-        callback: () => {
-          platform.toggleSpeed();
-          platform.body.setVelocity(platform.getSpeedX(), platform.getSpeedY());
-          platform.justHitBoundary = false;
-        },
-      });
+      let holdTimer = this.time.delayedCall(platform.hold, () => {
+        platform.toggleSpeed();
+        platform.body.setVelocity(platform.speedX, platform.speedY);
+        platform.justHitBoundary = false;
+      }, [], this);
     }
   }
 
@@ -513,7 +426,7 @@ export default class GameScene extends Phaser.Scene {
         "Time's Up!",
         {
           fontFamily: 'Pixel Inversions',
-          fontSize: 44,
+          fontSize: '4em',
           color: '#FFFFFF',
         }
       );
@@ -561,14 +474,13 @@ export default class GameScene extends Phaser.Scene {
 
   /**
    * Verifies if a player completed a level, should be split into two functions
-   * @param player {Phaser.Physics.Arcade.Sprite}
-   * @param exitDoor {Phaser.Physics.Arcade.Sprite}
+   * @param player
+   * @param exitDoor
    */
-  checkLevelComplete(player, exitDoor): void {
+  checkLevelComplete(player: Player, exitDoor: Phaser.Physics.Arcade.Sprite): void {
     if (
       player.body.onFloor() &&
-      player.y > exitDoor.y &&
-      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 18 &&
+      Phaser.Math.Distance.Between(player.x, player.y, exitDoor.x, exitDoor.y) < 26 &&
       !this.levelComplete
     ) {
       this.levelComplete = true;
@@ -593,7 +505,7 @@ export default class GameScene extends Phaser.Scene {
         'Level Complete!',
         {
           fontFamily: 'Pixel Inversions',
-          fontSize: 44,
+          fontSize: '4em',
           color: '#FFFFFF',
         }
       );
@@ -605,5 +517,27 @@ export default class GameScene extends Phaser.Scene {
         totalPlayerDeaths: this.totalPlayerDeaths,
       });
     }
+  }
+
+  setupAnimations(): void {
+    this.anims.create({
+      key: 'coinShine',
+      frames: this.anims.generateFrameNumbers(COIN_KEY, { start: 0, end: 5 }),
+      frameRate: 8,
+      repeat: -1
+    });
+
+    this.anims.create({
+      key: 'playerIdle',
+      frames: [{ key: PLAYER_KEY, frame: 0 }],
+      frameRate: 2
+    });
+
+    this.anims.create({
+      key: 'playerWalk',
+      frames: this.anims.generateFrameNumbers(PLAYER_KEY, { start: 0, end: 1 }),
+      frameRate: 10,
+      repeat: -1
+    });
   }
 }
