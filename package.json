@@ -5,7 +5,7 @@
   "main": "src/index.ts",
   "scripts": {
     "build": "yarn clean && parcel build src/index.html --no-source-maps --public-url . --out-dir dist",
-    "start": "parcel src/index.html",
+    "start": "yarn clean && parcel src/index.html",
     "clean": "rm -rfv dist/*"
   },
   "repository": {
