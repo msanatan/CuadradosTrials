@@ -335,7 +335,7 @@ export default class GameScene extends Phaser.Scene {
 
     spikes.addMultiple(tilemap.createFromObjects(TILED_SPIKES_LAYER, {
       key: SPIKE_KEY
-    })
+    }));
 
     // Add coins
     const coins = this.physics.add.group({
