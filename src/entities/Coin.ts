@@ -6,27 +6,11 @@
 import Phaser from 'phaser';
 import { COIN_KEY } from '../constants';
 
-/**
- *
- * @param {Phaser.Physics.Arcade.Sprite} spike
- * @param {Phaser.Scene} scene
- */
-export const createCoin = (coin, scene) => {
-  coin.setOrigin(0.5, 0.5);
-  scene.physics.world.enable(coin, Phaser.Physics.Arcade.DYNAMIC_BODY);
-  coin.body.setImmovable(true);
-  coin.body.setAllowGravity(false);
-
-  // Hack to give it enable/disableBody functions
-  // See here: https://phaser.discourse.group/t/adding-arcade-physics-to-a-sprite/472/8
-  Object.assign(coin, Phaser.Physics.Arcade.Components.Enable);
-
-  scene.anims.create({
-    key: 'shine',
-    frames: scene.anims.generateFrameNumbers(COIN_KEY, { start: 0, end: 5 }),
-    frameRate: 8,
-    repeat: -1,
-  });
-
-  coin.anims.play('shine', true);
-};
+export default class Coin extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string = COIN_KEY, frame: number = 0) {
+    super(scene, x, y, texture, frame);
+    this.setOrigin(0, 1);
+    this.scene.physics.world.enable(this, Phaser.Physics.Arcade.DYNAMIC_BODY);
+    this.scene.add.existing(this);
+  }
+}

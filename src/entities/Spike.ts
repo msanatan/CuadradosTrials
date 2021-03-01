@@ -4,16 +4,14 @@
  * @description  Cuadrado's Trials
  */
 import Phaser from 'phaser';
+import { SPIKE_KEY } from '../constants';
 
-/**
- *
- * @param {Phaser.Physics.Arcade.Sprite} spike
- * @param {Phaser.Scene} scene
- */
-export const createSpike = (spike, scene) => {
-  spike.setOrigin(0.5, 0.5);
-  scene.physics.world.enable(spike, Phaser.Physics.Arcade.DYNAMIC_BODY);
-  spike.body.setSize(32, 30);
-  spike.body.setImmovable(true);
-  spike.body.setAllowGravity(false);
-};
+export default class Spike extends Phaser.Physics.Arcade.Sprite {
+  constructor(scene: Phaser.Scene, x: number, y: number, texture: string = SPIKE_KEY, frame: number = 0) {
+    super(scene, x, y, texture, frame);
+    this.setOrigin(0, 1);
+    this.scene.physics.world.enable(this);
+    this.body.setSize(32, 30);
+    this.scene.add.existing(this);
+  }
+}
