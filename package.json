@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/msanatan/CuadradosTrials#readme",
   "dependencies": {
-    "phaser": "^3.52.0"
+    "phaser": "^3.53.0"
   },
   "devDependencies": {
     "parcel-bundler": "^1.12.4",
