@@ -225,9 +225,9 @@ export default class GameScene extends Phaser.Scene {
       this.player.body.velocity.x !== 0 &&
       (this.player.body.onFloor() || this.player.onPlatform)
     ) {
-      this.player.play({ key: 'playerWalk' });
+      this.player.anims.play({ key: 'playerWalk' }, true);
     } else {
-      this.player.play({ key: 'playerIdle' });
+      this.player.anims.play({ key: 'playerIdle' }, true);
     }
 
     // Check direction of animations

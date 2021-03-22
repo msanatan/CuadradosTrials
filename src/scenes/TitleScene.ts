@@ -35,7 +35,7 @@ export default class TitleScene extends Phaser.Scene {
       frameRate: 10
     });
     player.body.setAllowGravity(false);
-    player.play({ key: 'playerWalk', repeat: -1 });
+    player.anims.play({ key: 'playerWalk', repeat: -1 }, true);
 
     // Add text to tell player to press Spacebar to start
     const beginText = this.add.text(400, 554, 'PRESS <SPACE> TO BEGIN', {
