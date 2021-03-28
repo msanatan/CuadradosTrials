@@ -28,7 +28,7 @@ import {
 
 export default class PreloadScene extends Phaser.Scene {
   constructor() {
-    super('preload-scene');
+    super('PreloadScene');
   }
 
   preload(): void {
@@ -107,20 +107,29 @@ export default class PreloadScene extends Phaser.Scene {
     for (let i = 1; i < 5; i++) {
       this.load.tilemapTiledJSON(getLevelKey(i), `assets/levels/level${i}.json`);
     }
-    // Load Google Font script
-    this.load.script('webfont', 'https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js');
   }
 
-  create(): void {
-    // Load fonts
-    WebFont.load({
-      custom: {
-        families: ['Pixel Inversions', 'VCR OSD Mono', 'Minecraft'],
-        urls: ['../fonts.css'],
-      },
-      active: () => {
-        this.scene.start('title-scene');
-      },
-    });
+  async create() {
+    try {
+      await this.loadFonts('Pixel Inversions', 'assets/fonts/pixel-inversions.ttf');
+      await this.loadFonts('VCR OSD Mono', 'assets/fonts/vcr-osd-mono.ttf');
+      await this.loadFonts('Minecraft', 'assets/fonts/minecraft.ttf');
+    } catch (error) {
+      console.error('Could not load custom fonts');
+    }
+
+    this.scene.start('TitleScene');
+  }
+
+  async loadFonts(name: string, url: string) {
+    const font = new FontFace(name, `url(${url})`);
+
+    try {
+      await font.load();
+      document.fonts.add(font);
+      document.body.classList.add('fonts-loaded');
+    } catch (error) {
+      console.error(`Could not load font ${name}: ${error.message}`);
+    };
   }
 }
