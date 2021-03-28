@@ -13,7 +13,7 @@ import {
 
 export default class GameCompleteScene extends Phaser.Scene {
   constructor() {
-    super('game-complete-scene');
+    super('GameCompleteScene');
   }
 
   init(data: object): void {
@@ -115,7 +115,7 @@ export default class GameCompleteScene extends Phaser.Scene {
     this.cameras.main.on(
       'camerafadeoutcomplete',
       () => {
-        this.scene.start('title-scene');
+        this.scene.start('TitleScene');
       },
       this
     );

@@ -7,7 +7,7 @@ import Phaser from 'phaser';
 
 export default class HUDScene extends Phaser.Scene {
   constructor() {
-    super('hud-scene');
+    super('HUDScene');
     /**
      * @type {Phaser.GameObjects.Text}
      */

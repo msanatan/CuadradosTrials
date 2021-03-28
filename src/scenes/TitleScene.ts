@@ -12,7 +12,7 @@ export default class TitleScene extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys = null;
 
   constructor() {
-    super('title-scene');
+    super('TitleScene');
   }
 
   create(): void {
@@ -73,9 +73,9 @@ export default class TitleScene extends Phaser.Scene {
     this.cameras.main.on(
       'camerafadeoutcomplete',
       () => {
-        this.scene.start('game-scene');
-        this.scene.start('hud-scene');
-        this.scene.bringToTop('hud-scene');
+        this.scene.start('GameScene');
+        this.scene.start('HUDScene');
+        this.scene.bringToTop('HUDScene');
       },
       this
     );

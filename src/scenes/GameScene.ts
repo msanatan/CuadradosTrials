@@ -53,7 +53,7 @@ export default class GameScene extends Phaser.Scene {
   cursors: Phaser.Types.Input.Keyboard.CursorKeys = null;
 
   constructor() {
-    super('game-scene');
+    super('GameScene');
   }
 
   init(data: object): void {
@@ -449,7 +449,7 @@ export default class GameScene extends Phaser.Scene {
    * @param sceneData
    */
   fadeToScene(timerDelay: number, cameraFadeTime: number, sceneData: object): void {
-    const hudScene = this.scene.get('hud-scene');
+    const hudScene = this.scene.get('HUDScene');
 
     this.time.addEvent({
       delay: timerDelay,
@@ -488,9 +488,9 @@ export default class GameScene extends Phaser.Scene {
       this.totalCoinsCollected += this.registry.get('coinsCollected');
 
       if (this.finalLevel) {
-        const hudScene = this.scene.get('hud-scene');
+        const hudScene = this.scene.get('HUDScene');
         hudScene.scene.stop();
-        this.scene.start('game-complete-scene', {
+        this.scene.start('GameCompleteScene', {
           totalCoins: 8,
           totalCoinsCollected: this.totalCoinsCollected,
           totalPlayerDeaths: this.totalPlayerDeaths,
